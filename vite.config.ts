@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
 
-    // ✅ FIX: allow Render / external domain
-    allowedHosts: ["provisa-imnv.onrender.com"],
+    // allow external domains (Render, etc.)
+    allowedHosts: "all",
 
     proxy: {
       "/api": {
@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => ({
         secure: false,
       },
     },
+
     hmr: {
       overlay: false,
     },
