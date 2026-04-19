@@ -1,0 +1,178 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown, Calendar } from "lucide-react";
+import logo from "@/assets/logo.png";
+
+const abroadStudyLinks = [
+  { label: "Australia", path: "/study-abroad/australia" },
+  { label: "Japan", path: "/study-abroad/japan" },
+  { label: "Canada", path: "/study-abroad/canada" },
+  { label: "Europe", path: "/study-abroad/europe" },
+  { label: "USA", path: "/study-abroad/usa" },
+  { label: "South Korea", path: "/study-abroad/south-korea" },
+];
+
+const serviceLinks = [
+  { label: "Study Pathway Consultation", path: "/services/study-pathway" },
+  { label: "Interview Preparation", path: "/services/interview-prep" },
+  { label: "Career Counseling", path: "/services/career-counseling" },
+  { label: "Finance & Scholarship", path: "/services/finance-scholarship" },
+  { label: "Visa Guidance", path: "/services/visa-guidance" },
+  { label: "Pre-departure Briefing", path: "/services/pre-departure" },
+];
+
+const testPrepLinks = [
+  { label: "IELTS", path: "/test-prep/ielts" },
+  { label: "PTE", path: "/test-prep/pte" },
+];
+
+const navItems = [
+  { label: "Abroad Study", dropdown: abroadStudyLinks },
+  { label: "Test Preparation", dropdown: testPrepLinks },
+  { label: "Services", dropdown: serviceLinks },
+  { label: "Blogs", path: "/blogs" },
+  { label: "About", path: "/about" },
+  { label: "Contact", path: "/contact" },
+  { label: "Team", path: "/team" },
+  { label: "FAQ", path: "/faq" },
+  { label: "Universities", path: "/universities" },
+];
+
+const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const location = useLocation();
+
+  return (
+    <nav className="bg-background shadow-sm sticky top-0 z-50 animate-slide-down data-scroll-reveal">
+      <div className="section-container flex items-center justify-between h-16 md:h-20">
+        <Link to="/" className="flex items-center gap-2 animation-delay-100">
+          <img src={logo} alt="ProVisa" className="h-10 md:h-12 animate-fade-in" />
+          
+        </Link>
+
+        {/* Desktop Nav */}
+        <div className="hidden lg:flex items-center gap-1 animation-delay-200">
+          {navItems.map((item, index) =>
+            item.dropdown ? (
+              <div
+                key={item.label}
+                className="relative group data-scroll-reveal"
+                style={{ '--order': index + 1 } as React.CSSProperties}
+                onMouseEnter={() => setOpenDropdown(item.label)}
+                onMouseLeave={() => setOpenDropdown(null)}
+              >
+                <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors animate-fade-in-up">
+                  {item.label}
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+                {openDropdown === item.label && (
+                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-lg py-2 min-w-[220px] animate-fade-in-up">
+                    {item.dropdown.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-muted hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={item.label}
+                to={item.path!}
+                className={`px-3 py-2 text-sm font-medium transition-colors data-scroll-reveal animate-fade-in-up animation-delay-300 ${
+                  location.pathname === item.path
+                    ? "text-primary"
+                    : "text-foreground hover:text-primary"
+                }`}
+                style={{ '--order': index + 1 } as React.CSSProperties}
+              >
+                {item.label}
+              </Link>
+            )
+          )}
+        </div>
+
+        <Link
+          to="/appointment"
+          className="hidden lg:flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity animate-bounce-in animation-delay-400 data-scroll-reveal"
+        >
+          <Calendar className="h-4 w-4" />
+          Book an Appointment
+        </Link>
+
+        {/* Mobile Toggle */}
+        <button
+          className="lg:hidden p-2 text-foreground animate-fade-in animation-delay-100"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="lg:hidden bg-background border-t border-border animate-slide-up">
+          <div className="section-container py-4 space-y-2">
+            {navItems.map((item, index) =>
+              item.dropdown ? (
+                <div key={item.label} className="data-scroll-reveal">
+                  <button
+                    onClick={() =>
+                      setOpenDropdown(openDropdown === item.label ? null : item.label)
+                    }
+                    className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-foreground"
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        openDropdown === item.label ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  {openDropdown === item.label && (
+                    <div className="pl-6 space-y-1">
+                      {item.dropdown.map((link) => (
+                        <Link
+                          key={link.path}
+                          to={link.path}
+                          className="block px-3 py-1.5 text-sm text-muted-foreground hover:text-primary"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.path!}
+                  className="block px-3 py-2 text-sm font-medium text-foreground hover:text-primary data-scroll-reveal animate-slide-up"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
+            <Link
+              to="/appointment"
+              className="flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-lg text-sm font-semibold mt-4 animate-bounce-in"
+              onClick={() => setMobileOpen(false)}
+            >
+              <Calendar className="h-4 w-4" />
+              Book an Appointment
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
