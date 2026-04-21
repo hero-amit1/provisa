@@ -7,54 +7,85 @@ import usaImg from "@/assets/usa.jpg";
 import southkoreaImg from "@/assets/southkorea.jpg";
 
 const countries = [
-  { name: "Australia", image: australiaImg, path: "/study-abroad/australia", desc: "Australia has one of the best institutions and universities..." },
-  { name: "Japan", image: japanImg, path: "/study-abroad/japan", desc: "Education System in Japan provides world-class opportunities..." },
-  { name: "Canada", image: canadaImg, path: "/study-abroad/canada", desc: "Canada offers two major intakes with excellent programs..." },
-  { name: "Europe", image: europeImg, path: "/study-abroad/europe", desc: "It's common knowledge that studying in Europe is rewarding..." },
-  { name: "USA", image: usaImg, path: "/study-abroad/usa", desc: "The USA offers two major intakes with diverse programs..." },
-  { name: "South Korea", image: southkoreaImg, path: "/study-abroad/south-korea", desc: "South Korea offers innovative education and vibrant culture..." },
+  { name: "Australia", image: australiaImg, path: "/study-abroad/australia", desc: "Top-ranked universities and global opportunities." },
+  { name: "Japan", image: japanImg, path: "/study-abroad/japan", desc: "Advanced education with innovation and culture." },
+  { name: "Canada", image: canadaImg, path: "/study-abroad/canada", desc: "Affordable education with PR opportunities." },
+  { name: "Europe", image: europeImg, path: "/study-abroad/europe", desc: "Diverse programs across top EU universities." },
+  { name: "USA", image: usaImg, path: "/study-abroad/usa", desc: "World-leading universities and research hubs." },
+  { name: "South Korea", image: southkoreaImg, path: "/study-abroad/south-korea", desc: "Modern education with tech-driven learning." },
 ];
 
 const AbroadStudySection = () => {
   return (
-    <section className="section-padding bg-muted">
+    <section className="section-padding bg-gradient-to-b from-muted/50 to-background">
       <div className="section-container">
+
+        {/* HEADER */}
         <div className="text-center mb-12">
-          <p className="section-subtitle mb-2">Abroad Study</p>
-          <h2 className="section-title mb-4">Abroad Study</h2>
+          <p className="section-subtitle mb-2">Study Abroad</p>
+
+          <h2 className="section-title mb-4">
+            Choose your dream destination
+          </h2>
+
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Discover opportunities to study abroad in top educational destinations worldwide.
+            Explore top countries offering world-class education and career opportunities.
           </p>
         </div>
+
+        {/* GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {countries.map((country) => (
-            <div key={country.name} className="bg-card rounded-xl overflow-hidden border border-border card-hover">
-              <div className="h-48 overflow-hidden">
+
+          {countries.map((country, index) => (
+            <Link
+              to={country.path}
+              key={country.name}
+              className="group relative bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+
+              {/* IMAGE */}
+              <div className="relative h-52 overflow-hidden">
+
                 <img
                   src={country.image}
-                  alt={`Study in ${country.name}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  alt={country.name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
-                  width={768}
-                  height={512}
                 />
+
+                {/* DARK OVERLAY */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                {/* HOVER ORANGE GLOW */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-orange-500/10" />
               </div>
-              <div className="p-5">
-                <h3 className="font-heading font-semibold text-lg text-foreground mb-2">
+
+              {/* CONTENT */}
+              <div className="p-5 relative">
+
+                <h3 className="font-heading font-semibold text-lg text-foreground mb-2 group-hover:text-orange-500 transition-colors">
                   STUDY IN {country.name.toUpperCase()}
                 </h3>
+
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {country.desc}
                 </p>
-                <Link
-                  to={country.path}
-                  className="text-primary text-sm font-semibold hover:underline"
-                >
-                  Learn More →
-                </Link>
+
+                <div className="flex items-center text-sm font-semibold text-primary group-hover:text-orange-500 transition-colors">
+                  Learn More
+                  <span className="ml-1 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
+                </div>
+
+                {/* ORANGE BORDER ANIMATION */}
+                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-orange-500 group-hover:w-full transition-all duration-300" />
+
               </div>
-            </div>
+            </Link>
           ))}
+
         </div>
       </div>
     </section>

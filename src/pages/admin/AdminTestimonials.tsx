@@ -36,7 +36,7 @@ const AdminTestimonials = () => {
       setItems(data);
     } catch (error) {
       console.error(error);
-      setItems([]); // fallback empty list, no JSON.parse
+      setItems([]);
     } finally {
       setLoading(false);
     }
@@ -51,20 +51,23 @@ const AdminTestimonials = () => {
       });
       return;
     }
+
     try {
       if (editingId) {
         await testimonialsAPI.update(editingId, form);
       } else {
         await testimonialsAPI.create(form);
       }
+
       loadData();
       setOpen(false);
       setEditingId(null);
       setForm({ name: '', university: '', text: '' });
-    } catch (error) {
-      console.error(error);
-      const errorMsg = error.message || 'Save failed - check backend and console';
+
+    } catch (error: any) {
+      const errorMsg = error?.message || 'Save failed';
       setError(errorMsg);
+
       toast({
         title: "Save failed",
         description: errorMsg,
@@ -81,71 +84,85 @@ const AdminTestimonials = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this testimonial?')) return;
+
     try {
       await testimonialsAPI.delete(id);
       loadData();
-      toast({ title: "Deleted", description: "Testimonial removed successfully" });
-    } catch (error) {
-      console.error(error);
+
+      toast({
+        title: "Deleted",
+        description: "Testimonial removed successfully",
+      });
+
+    } catch (error: any) {
       toast({
         title: "Delete failed",
-        description: error.message || 'Unknown error',
+        description: error?.message || 'Unknown error',
         variant: "destructive",
       });
     }
   };
 
   if (loading) {
-    return <AdminLayout><div className="p-8 text-center">Loading testimonials...</div></AdminLayout>;
-  }
-
-  if (items.length === 0) {
-    return <AdminLayout><div className="p-8 text-center text-muted-foreground">No testimonials yet. Add one!</div></AdminLayout>;
+    return (
+      <AdminLayout>
+        <div className="p-8 text-center">Loading testimonials...</div>
+      </AdminLayout>
+    );
   }
 
   return (
     <AdminLayout>
+
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-heading font-semibold text-lg text-foreground">Manage Testimonials</h2>
-        <Dialog open={open} onOpenChange={setOpen}> 
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="font-heading font-semibold text-lg text-foreground">
+          Manage Testimonials
+        </h2>
+
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Add Testimonial
             </Button>
           </DialogTrigger>
-<DialogContent>
+
+          <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingId ? 'Edit' : 'Add'} Testimonial</DialogTitle>
-              <DialogDescription>Add testimonial details</DialogDescription>
+              <DialogTitle>
+                {editingId ? 'Edit' : 'Add'} Testimonial
+              </DialogTitle>
+              <DialogDescription>
+                Add student testimonial details
+              </DialogDescription>
             </DialogHeader>
+
             <div className="space-y-4">
-              <div className="space-y-1">
-                <Input
-                  required
-                  placeholder="Student name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
-              </div>
-                <div className="space-y-1">
-                <Input
-                  required
-                  placeholder="University"
-                  value={form.university}
-                  onChange={(e) => setForm({ ...form, university: e.target.value })}
-                />
-              </div>
+              <Input
+                placeholder="Student name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+
+              <Input
+                placeholder="University"
+                value={form.university}
+                onChange={(e) => setForm({ ...form, university: e.target.value })}
+              />
+
               <Textarea
                 placeholder="Testimonial text"
                 value={form.text}
                 onChange={(e) => setForm({ ...form, text: e.target.value })}
               />
+
               <Button onClick={handleSave} className="w-full">
                 Save
               </Button>
@@ -154,36 +171,78 @@ const AdminTestimonials = () => {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {items.map((testimonial) => (
-          <div key={testimonial._id} className="bg-background border border-border rounded-xl p-6 hover:shadow-md transition-all">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="font-semibold text-foreground text-base">{testimonial.name}</h3>
-                <p className="text-sm text-muted-foreground">{testimonial.university}</p>
+      {/* GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+        {items.map((t) => {
+          const initials = t.name
+            .split(" ")
+            .map(n => n[0])
+            .join("")
+            .toUpperCase();
+
+          return (
+            <div
+              key={t._id}
+              className="group relative bg-gradient-to-br from-background to-muted/30 border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+
+              {/* HEADER */}
+              <div className="flex items-start justify-between mb-4">
+
+                <div className="flex items-center gap-3">
+
+                  {/* AVATAR */}
+                  <div className="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">
+                    {initials}
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-foreground text-sm">
+                      {t.name}
+                    </h3>
+
+                    <span className="inline-block mt-1 text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                      {t.university}
+                    </span>
+                  </div>
+                </div>
+
+                {/* ACTIONS */}
+                <div className="opacity-0 group-hover:opacity-100 transition flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEdit(t)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(t._id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleEdit(testimonial)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(testimonial._id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+
+              {/* QUOTE */}
+              <div className="relative">
+                <span className="text-3xl text-primary/20 absolute -top-2 -left-1">“</span>
+
+                <p className="text-sm text-muted-foreground leading-relaxed pl-4 line-clamp-5">
+                  {t.text}
+                </p>
+
+                <span className="text-3xl text-primary/20 absolute -bottom-4 right-0">”</span>
               </div>
+
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
-              "{testimonial.text}"
-            </p>
-          </div>
-        ))}
+          );
+        })}
+
       </div>
     </AdminLayout>
   );
