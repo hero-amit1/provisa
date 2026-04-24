@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Quote } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import { testimonialsAPI } from '@/lib/api';
 
 const TestimonialsSection = () => {
@@ -96,6 +96,12 @@ const TestimonialsSection = () => {
                       <span className="inline-block mt-1 text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                         {t.university}
                       </span>
+
+                      <div className="flex items-center gap-1 ml-auto">
+                        {Array.from({length: 5}, (_, i) => (
+                          <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
+                        ))}
+                      </div>
                     </div>
 
                   </div>

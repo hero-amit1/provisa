@@ -56,8 +56,8 @@ const AdminInquiries = () => {
               <th className="text-left p-4 font-medium text-muted-foreground">Name</th>
               <th className="text-left p-4 font-medium text-muted-foreground">Email</th>
               <th className="text-left p-4 font-medium text-muted-foreground">Subject</th>
-              <th className="text-left p-4 font-medium text-muted-foreground">Date</th>
-              <th className="text-left p-4 font-medium text-muted-foreground">Status</th>
+<th className="text-right p-4 font-medium text-muted-foreground">Date</th>
+<th className="text-center p-4 font-medium text-muted-foreground">Status</th>
               <th className="text-right p-4 font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>

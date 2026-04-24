@@ -222,8 +222,8 @@ const AdminBlogs = () => {
               <tr className="border-b">
                 <th className="text-left p-4 text-sm">Title</th>
                 <th className="text-left p-4 text-sm">Status</th>
-                <th className="text-left p-4 text-sm">Date</th>
-                <th className="w-32"></th>
+<th className="text-right p-4 text-sm">Date</th>
+<th className="text-right p-4 text-sm w-32"></th>
               </tr>
             </thead>
 

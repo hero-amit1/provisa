@@ -8,6 +8,14 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DialogDescription } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { Star } from 'lucide-react';
 import { testimonialsAPI } from '@/lib/api';
 
 interface Testimonial {
@@ -15,13 +23,14 @@ interface Testimonial {
   name: string;
   university: string;
   text: string;
+  rating: number;
 }
 
 const AdminTestimonials = () => {
   const [items, setItems] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', university: '', text: '' });
+const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5 });
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const { toast } = useToast();
@@ -62,7 +71,7 @@ const AdminTestimonials = () => {
       loadData();
       setOpen(false);
       setEditingId(null);
-      setForm({ name: '', university: '', text: '' });
+      setForm({ name: '', university: '', text: '', rating: 5 });
 
     } catch (error: any) {
       const errorMsg = error?.message || 'Save failed';
@@ -78,7 +87,7 @@ const AdminTestimonials = () => {
 
   const handleEdit = (item: Testimonial) => {
     setEditingId(item._id);
-    setForm({ name: item.name, university: item.university, text: item.text });
+    setForm({ name: item.name, university: item.university, text: item.text, rating: item.rating || 5 });
     setOpen(true);
   };
 
@@ -163,6 +172,17 @@ const AdminTestimonials = () => {
                 onChange={(e) => setForm({ ...form, text: e.target.value })}
               />
 
+              <Select value={form.rating.toString()} onValueChange={(v) => setForm({ ...form, rating: parseInt(v) })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[1,2,3,4,5].map((r) => (
+                    <SelectItem key={r} value={r.toString()}> {r} Stars </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <Button onClick={handleSave} className="w-full">
                 Save
               </Button>
@@ -205,6 +225,12 @@ const AdminTestimonials = () => {
                     <span className="inline-block mt-1 text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                       {t.university}
                     </span>
+
+                    <div className="flex items-center gap-1 ml-auto">
+                      {Array.from({length: 5}, (_, i) => (
+                        <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
+                      ))}
+                    </div>
                   </div>
                 </div>
 

@@ -8,29 +8,53 @@ const stats = [
   { icon: Clock, value: 15, suffix: "+", label: "Years of experience" },
 ];
 
-// Hook for count-up animation
-const useCountUp = (end: number, duration = 1500) => {
+// ✅ FIX: Separate component (so hooks are valid)
+const StatCard = ({ stat, index }: any) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     let start = 0;
-    const increment = end / (duration / 16);
+    const duration = 1500;
+    const increment = stat.value / (duration / 16);
 
     const timer = setInterval(() => {
       start += increment;
 
-      if (start >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
+      if (start >= stat.value) {
+        start = 0; // 🔁 infinite loop reset
       }
+
+      setCount(Math.floor(start));
     }, 16);
 
     return () => clearInterval(timer);
-  }, [end, duration]);
+  }, [stat.value]);
 
-  return count;
+  return (
+    <div
+      className="group relative bg-background border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      {/* ICON */}
+      <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition">
+        <stat.icon className="h-6 w-6 text-primary" />
+      </div>
+
+      {/* NUMBER */}
+      <div className="text-3xl md:text-4xl font-bold text-foreground">
+        {count}
+        {stat.suffix}
+      </div>
+
+      {/* LABEL */}
+      <div className="text-sm text-muted-foreground mt-1">
+        {stat.label}
+      </div>
+
+      {/* GLOW */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-primary/5 blur-xl -z-10" />
+    </div>
+  );
 };
 
 const StatsSection = () => {
@@ -53,39 +77,11 @@ const StatsSection = () => {
 
         {/* GRID */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-
-          {stats.map((stat, index) => {
-            const count = useCountUp(stat.value);
-
-            return (
-              <div
-                key={stat.label}
-                className="group relative bg-background border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-
-                {/* ICON */}
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition">
-                  <stat.icon className="h-6 w-6 text-primary" />
-                </div>
-
-                {/* NUMBER */}
-                <div className="text-3xl md:text-4xl font-bold text-foreground">
-                  {count}{stat.suffix}
-                </div>
-
-                {/* LABEL */}
-                <div className="text-sm text-muted-foreground mt-1">
-                  {stat.label}
-                </div>
-
-                {/* GLOW EFFECT */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-primary/5 blur-xl -z-10" />
-              </div>
-            );
-          })}
-
+          {stats.map((stat, index) => (
+            <StatCard key={stat.label} stat={stat} index={index} />
+          ))}
         </div>
+
       </div>
     </section>
   );

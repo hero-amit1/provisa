@@ -1,6 +1,7 @@
 const express = require('express');
 const Team = require('../../models/Team');
 const auth = require('../../middleware/auth');
+const upload = require('../../middleware/upload');
 const router = express.Router();
 
 // GET all
@@ -14,9 +15,12 @@ router.get('/', auth, async (req, res) => {
 });
 
 // POST create
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, upload, async (req, res) => {
   try {
-    const teamMember = new Team(req.body);
+    const teamMember = new Team({
+      ...req.body,
+      image: req.file ? `/uploads/team/${req.file.filename}` : null
+    });
     await teamMember.save();
     res.status(201).json(teamMember);
   } catch (err) {
@@ -25,9 +29,13 @@ router.post('/', auth, async (req, res) => {
 });
 
 // PUT update
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, upload, async (req, res) => {
   try {
-    const teamMember = await Team.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const updateData = req.body;
+    if (req.file) {
+      updateData.image = `/uploads/team/${req.file.filename}`;
+    }
+    const teamMember = await Team.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     if (!teamMember) return res.status(404).json({ error: 'Team member not found' });
     res.json(teamMember);
   } catch (err) {

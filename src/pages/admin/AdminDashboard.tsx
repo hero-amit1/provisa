@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { blogsAPI, servicesAPI, teamAPI, testimonialsAPI, universitiesAPI, inquiriesAPI } from "@/lib/api";
-import { FileText, Users, MessageSquare, BookOpen, GraduationCap, TrendingUp } from "lucide-react";
+import { blogsAPI, teamAPI, testimonialsAPI, universitiesAPI, inquiriesAPI } from "@/lib/api";
+import { FileText, Users, MessageSquare, GraduationCap, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
-    services: 0,
     blogs: 0,
     team: 0,
     testimonials: 0,
@@ -20,9 +19,8 @@ const AdminDashboard = () => {
       setLoading(true);
       try {
         const [
-          services, blogs, team, testimonials, universities, inquiries
+          blogs, team, testimonials, universities, inquiries
         ] = await Promise.all([
-          servicesAPI.getAllPublic(),
           blogsAPI.getAllPublic(),
           teamAPI.getAllPublic(),
           testimonialsAPI.getAllPublic(),
@@ -30,7 +28,6 @@ const AdminDashboard = () => {
           inquiriesAPI.getAll()
         ]);
         setStats({
-          services: services.length,
           blogs: blogs.length,
           team: team.length,
           testimonials: testimonials.length,
@@ -46,7 +43,6 @@ const AdminDashboard = () => {
   if (loading) return <AdminLayout><div>Loading dashboard...</div></AdminLayout>;
 
   const statCards = [
-    { label: "Total Services", value: stats.services, icon: BookOpen, color: "bg-primary/10 text-primary" },
     { label: "Blog Posts", value: stats.blogs, icon: FileText, color: "bg-destructive/10 text-destructive" },
     { label: "Team Members", value: stats.team, icon: Users, color: "bg-secondary text-secondary-foreground" },
     { label: "Testimonials", value: stats.testimonials, icon: MessageSquare, color: "bg-green-500/10 text-green-500" },

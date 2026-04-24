@@ -1,73 +1,118 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { Calendar } from "lucide-react";
-import { inquiriesAPI } from '@/lib/api';
+import { inquiriesAPI } from "@/lib/api";
 
 const AppointmentPage = () => {
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", date: "", time: "", message: "",
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    education: "",
+    subject: "",
+    year: "",
+    gpa: "",
+    country: "",
+    test: "",
+    course: "",
+    visited: "",
+    date: "",
+    message: "",
   });
+
+  const handleChange = (key: string, value: string) => {
+    setForm({ ...form, [key]: value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-    await inquiriesAPI.create({ ...form, type: 'appointment' });
-      alert("Appointment booked successfully! We will contact you shortly.");
-      setForm({ name: "", email: "", phone: "", date: "", time: "", message: "" });
-    } catch (err) {
-      alert("Error booking appointment. Try again.");
+      await inquiriesAPI.create({ ...form, type: "appointment" });
+      alert("Appointment booked successfully!");
+    } catch {
+      alert("Error submitting form");
     }
   };
 
   return (
     <Layout>
       <section className="section-padding">
-        <div className="section-container max-w-2xl">
-          <div className="text-center mb-12">
-            <Calendar className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h1 className="section-title mb-4">Book an Appointment</h1>
-            <p className="text-muted-foreground">
-              Schedule a free consultation with our education experts.
+        <div className="section-container max-w-5xl">
+
+          {/* Header */}
+          <div className="mb-10">
+            <p className="text-orange-500 text-sm font-semibold">
+              Appointment Form
+            </p>
+            <h1 className="text-3xl font-bold mt-2">
+              Book an Appointment
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Please fill out the form below to book an appointment with us.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {[
-              { key: "name", label: "Full Name", type: "text" },
-              { key: "email", label: "Email", type: "email" },
-              { key: "phone", label: "Phone Number", type: "tel" },
-              { key: "date", label: "Preferred Date", type: "date" },
-              { key: "time", label: "Preferred Time", type: "time" },
-            ].map((field) => (
-              <div key={field.key}>
-                <label className="block text-sm font-medium text-foreground mb-1.5">
-                  {field.label}
-                </label>
-                <input
-                  type={field.type}
-                  value={form[field.key as keyof typeof form]}
-                  onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                  required
-                />
-              </div>
-            ))}
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+
+            {/* Left Side */}
+            <Input label="Full Name" value={form.name} onChange={(v) => handleChange("name", v)} />
+            <Input label="Email Address" value={form.email} onChange={(v) => handleChange("email", v)} />
+
+            <Input label="Phone Number" value={form.phone} onChange={(v) => handleChange("phone", v)} />
+            <Input label="Address" value={form.address} onChange={(v) => handleChange("address", v)} />
+
+            <Select label="Education Level" onChange={(v) => handleChange("education", v)} />
+            <Select label="Select Subject" onChange={(v) => handleChange("subject", v)} />
+
+            <Input type="date" label="Passed Year" value={form.year} onChange={(v) => handleChange("year", v)} />
+            <Input label="GPA / Percentage" value={form.gpa} onChange={(v) => handleChange("gpa", v)} />
+
+            <Select label="Destination Country" onChange={(v) => handleChange("country", v)} />
+            <Select label="Test Preparation" onChange={(v) => handleChange("test", v)} />
+
+            <Select label="Course" onChange={(v) => handleChange("course", v)} />
+
+            {/* Radio */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Message</label>
+              <label className="block text-sm mb-2 font-medium">
+                Have you visited before?
+              </label>
+              <div className="flex gap-4">
+                <label>
+                  <input type="radio" name="visit" onChange={() => handleChange("visited", "yes")} /> Yes
+                </label>
+                <label>
+                  <input type="radio" name="visit" onChange={() => handleChange("visited", "no")} /> No
+                </label>
+              </div>
+            </div>
+
+            <Input type="date" label="Appointment Date" value={form.date} onChange={(v) => handleChange("date", v)} />
+
+            {/* Full Width Message */}
+            <div className="md:col-span-2">
+              <label className="block text-sm mb-2 font-medium">
+                Message
+              </label>
               <textarea
                 rows={4}
                 value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                placeholder="Tell us about your study goals..."
+                onChange={(e) => handleChange("message", e.target.value)}
+                className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-orange-500 outline-none"
               />
             </div>
-            <button
-              type="submit"
-              className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-            >
-              Book Appointment
-            </button>
+
+            {/* Button */}
+            <div className="md:col-span-2 text-right">
+              <button
+                type="submit"
+                className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
+              >
+                Book an Appointment
+              </button>
+            </div>
+
           </form>
         </div>
       </section>
@@ -76,3 +121,35 @@ const AppointmentPage = () => {
 };
 
 export default AppointmentPage;
+
+
+
+
+// 🔹 Reusable Input Component
+const Input = ({ label, value, onChange, type = "text" }: any) => (
+  <div>
+    <label className="block text-sm mb-1 font-medium">{label}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-orange-500 outline-none"
+      required
+    />
+  </div>
+);
+
+// 🔹 Reusable Select Component
+const Select = ({ label, onChange }: any) => (
+  <div>
+    <label className="block text-sm mb-1 font-medium">{label}</label>
+    <select
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-orange-500 outline-none"
+    >
+      <option>--- Select ---</option>
+      <option>Option 1</option>
+      <option>Option 2</option>
+    </select>
+  </div>
+);

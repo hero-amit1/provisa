@@ -72,26 +72,8 @@ export const blogsAPI = {
   getAllPublic: () => apiFetch('/blogs'),
 };
 
-// ================= SERVICES =================
-export const servicesAPI = {
-  getAll: () => apiFetch('/admin/services'),
-  getAllPublic: () => apiFetch('/services'),
 
-  create: (data: any) =>
-    apiFetch('/admin/services', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
 
-  update: (id: string, data: any) =>
-    apiFetch(`/admin/services/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-
-  delete: (id: string) =>
-    apiFetch(`/admin/services/${id}`, { method: 'DELETE' }),
-};
 
 // ================= TEAM =================
 export const teamAPI = {

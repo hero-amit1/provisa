@@ -1,33 +1,16 @@
-import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { BookOpen, Users, Briefcase, DollarSign, Stamp, Plane } from "lucide-react";
-import { servicesAPI } from '@/lib/api';
+
+const services = [
+  { _id: '1', title: 'Study Pathway Consultation', description: 'Personalized study pathway planning and university selection.' },
+  { _id: '2', title: 'Interview Preparation', description: 'Mock interviews and coaching for university admissions.' },
+  { _id: '3', title: 'Career Counseling', description: 'Career guidance and job market insights.' },
+  { _id: '4', title: 'Finance & Scholarship', description: 'Scholarship search and financial planning.' },
+  { _id: '5', title: 'Visa Guidance', description: 'Complete visa application assistance.' },
+  { _id: '6', title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' },
+];
 
 const ServicesSection = () => {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const data = await servicesAPI.getAllPublic();
-        setServices(data);
-      } catch (err) {
-        console.error('Services load failed, using fallback');
-        setServices([
-          { _id: '1', title: 'Study Pathway Consultation', description: 'Personalized study pathway planning and university selection.' },
-          { _id: '2', title: 'Interview Preparation', description: 'Mock interviews and coaching for university admissions.' },
-          { _id: '3', title: 'Career Counseling', description: 'Career guidance and job market insights.' },
-          { _id: '4', title: 'Finance & Scholarship', description: 'Scholarship search and financial planning.' },
-          { _id: '5', title: 'Visa Guidance', description: 'Complete visa application assistance.' },
-          { _id: '6', title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchServices();
-  }, []);
 
   const getIcon = (title) => {
     if (title.includes('Study')) return BookOpen;
@@ -38,7 +21,7 @@ const ServicesSection = () => {
     return Plane;
   };
 
-  if (loading) return <div>Loading services...</div>;
+
 
   return (
     <section className="section-padding data-scroll-reveal" data-animation="slide-up">

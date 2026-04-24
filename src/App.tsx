@@ -17,13 +17,13 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
-import AdminServices from "./pages/admin/AdminServices";
 import AdminUniversities from "./pages/admin/AdminUniversities";
 import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
-import ServicesPage from "./pages/ServicesPage";
+
 import ProtectedRoute from "@/components/admin/ProtectedRoute";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +33,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
 <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutPage />} />
@@ -40,7 +41,7 @@ const App = () => (
             <Route path="/team" element={<TeamPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/universities" element={<UniversitiesPage />} />
-            <Route path="/services" element={<ServicesPage />} />
+
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/study-abroad/:country" element={<StudyAbroadPage />} />
             <Route path="/appointment" element={<AppointmentPage />} />
@@ -49,7 +50,6 @@ const App = () => (
             {/* Protected Admin Routes */}
             <Route path="/admin" element={<ProtectedRoute />}>
               <Route index element={<AdminDashboard />} />
-              <Route path="services" element={<AdminServices />} />
               <Route path="blogs" element={<AdminBlogs />} />
               <Route path="team" element={<AdminTeam />} />
               <Route path="testimonials" element={<AdminTestimonials />} />

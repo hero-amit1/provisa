@@ -1,5 +1,7 @@
 import Layout from "@/components/Layout";
 import { Target, Eye, Award } from "lucide-react";
+import MdImage from "@/assets/Md.jpg";
+import { motion } from "framer-motion";
 
 const aboutSections = [
   {
@@ -13,32 +15,84 @@ We counsel students by analyzing their academic profile and advising them the be
     icon: Eye,
     title: "Our Mission",
     content:
-      "Our mission is to make students choose the best education destination for them to help them become professional experts in the future. Many students from Nepal are in search of an ideal education provider abroad. PRO-VISA is here to guide them honest, up to date and right information to help students walk on right track for their bright future of success.",
+      "Our mission is to make students choose the best education destination for them to help them become professional experts in the future...",
   },
   {
     icon: Award,
     title: "Our Vision",
     content:
-      "Our vision is to be the most trusted and reliable education consultancy in Nepal, providing world-class guidance and support to students aspiring to study abroad. We aim to create a global network of successful alumni who contribute positively to society.",
+      "Our vision is to be the most trusted and reliable education consultancy in Nepal...",
   },
 ];
+
+// animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const AboutPage = () => {
   return (
     <Layout>
       <section className="section-padding">
         <div className="section-container">
-          <h1 className="section-title mb-4">Get to know about us</h1>
-          <p className="text-muted-foreground max-w-3xl mb-16">
-            We are a team of professionals dedicated to providing the best education
-            consultancy services in Nepal. We are here to help you make the right
-            decision for your future.
-          </p>
 
+          {/* Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="section-title mb-4"
+          >
+            Get to know about us
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground max-w-3xl mb-16"
+          >
+            We are a team of professionals dedicated to providing the best education consultancy services in Nepal.
+          </motion.p>
+
+          {/* ✅ M.D Section */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="mb-20 flex flex-col md:flex-row items-center gap-10 bg-muted/30 p-6 rounded-xl"
+          >
+            <div className="md:w-1/3 flex justify-center">
+              <img
+                src={MdImage}
+                alt="Managing Director"
+                className="w-64 h-64 object-cover rounded-full shadow-lg border"
+              />
+            </div>
+
+            <div className="md:w-2/3">
+              <h2 className="text-2xl font-bold text-primary mb-3">
+                Message from Managing Director
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Welcome to Pro-Visa... we are committed to guiding students toward success.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* About Sections */}
           <div className="space-y-16">
             {aboutSections.map((section, index) => (
-              <div
+              <motion.div
                 key={section.title}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
                 className={`flex flex-col md:flex-row gap-8 items-start ${
                   index % 2 === 1 ? "md:flex-row-reverse" : ""
                 }`}
@@ -51,14 +105,16 @@ const AboutPage = () => {
                     </h2>
                   </div>
                 </div>
+
                 <div className="md:w-2/3">
                   <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                     {section.content}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
+
         </div>
       </section>
     </Layout>

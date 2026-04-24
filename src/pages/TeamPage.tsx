@@ -45,9 +45,13 @@ const TeamPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {teamMembers.map((member) => (
               <div key={member._id} className="bg-card border border-border rounded-xl p-6 text-center card-hover">
-                <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Users className="h-10 w-10 text-muted-foreground" />
-                </div>
+                {member.image ? (
+                  <img src={`http://localhost:4000${member.image}`} alt={member.name} className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg" />
+                ) : (
+                  <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <Users className="h-10 w-10 text-muted-foreground" />
+                  </div>
+                )}
                 <h3 className="font-heading font-semibold text-foreground">{member.name}</h3>
                 <p className="text-sm text-primary">{member.role}</p>
               </div>
