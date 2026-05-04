@@ -2,6 +2,7 @@ import { useState } from "react";
 import Layout from "@/components/Layout";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { inquiriesAPI } from '@/lib/api';
+import { Textarea } from "@/components/ui/textarea";
 
 const ContactPage = () => {
   const [form, setForm] = useState({
@@ -86,19 +87,20 @@ const ContactPage = () => {
                   onChange={(e) => setForm({ ...form, subject: e.target.value })}
                   className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   required
-                />
+/>
               </div>
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-foreground mb-1.5">Message</label>
-                <textarea
-                  rows={5}
+                <Textarea
                   placeholder="Your message"
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                  className="resize-none"
                   required
                 />
               </div>
+
               <div className="md:col-span-2">
                 <button
                   type="submit"

@@ -8,7 +8,7 @@ const faqs = [
   { q: "Which countries can I study in through ProVisa?", a: "We facilitate study abroad programs in Australia, USA, UK, Canada, Japan, South Korea, New Zealand, Europe, China, Bangladesh, and Dubai." },
   { q: "Is the consultation free?", a: "Yes, ProVisa provides free education consultation to students interested in studying abroad." },
   { q: "Where is ProVisa located?", a: "Our main office is at Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal. We also have an office in Nepalgunj." },
-  { q: "Do you offer test preparation classes?", a: "Yes, we offer IELTS and PTE coaching with experienced tutors and currently have a 50% discount on coaching programs." },
+{ q: "Do you offer test preparation classes?", a: "Yes, we offer IELTS, TOEFL, SAT, PTE, and Japanese Language coaching with experienced tutors and currently have a 50% discount on coaching programs." },
   { q: "What is the visa success rate?", a: "We have a very high visa success rate with over 3,000 visas approved and 5,000+ students placed internationally." },
   { q: "How do I book an appointment?", a: "You can book an appointment through our website or by calling us at +9779851101782 or 01-45318190." },
 ];

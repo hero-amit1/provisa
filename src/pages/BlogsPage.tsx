@@ -4,8 +4,20 @@ import { Calendar, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { blogsAPI } from '@/lib/api';
 
+interface Blog {
+  _id: string;
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
+  image?: string;
+  author?: string;
+  createdAt?: string;
+  date?: string;
+}
+
 const BlogsPage = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -91,7 +103,7 @@ const BlogsPage = () => {
                     <img
                       src={
                         blog.image
-                          ? `http://localhost:4000${blog.image}`
+                          ? blog.image
                           : "https://via.placeholder.com/400x300"
                       }
                       alt={blog.title}

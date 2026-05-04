@@ -17,7 +17,7 @@ const AdminUniversities = () => {
   const [items, setItems] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', country: '', image: '' });
+  const [form, setForm] = useState({ name: '', country: '', image: null as File | null });
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -37,15 +37,21 @@ const AdminUniversities = () => {
 
   const handleSave = async () => {
     try {
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('country', form.country);
+      if (form.image) {
+        formData.append('image', form.image);
+      }
       if (editingId) {
-        await universitiesAPI.update(editingId, form);
+        await universitiesAPI.update(editingId, formData);
       } else {
-        await universitiesAPI.create(form);
+        await universitiesAPI.create(formData);
       }
       loadData();
       setOpen(false);
       setEditingId(null);
-      setForm({ name: '', country: '', image: '' });
+      setForm({ name: '', country: '', image: null });
     } catch (error) {
       console.error(error);
     }
@@ -56,7 +62,7 @@ const AdminUniversities = () => {
     setForm({
       name: item.name,
       country: item.country,
-      image: item.image || ''
+      image: null
     });
     setOpen(true);
   };
@@ -113,13 +119,24 @@ const AdminUniversities = () => {
                 }
               />
 
-              <Input
-                placeholder="Image URL"
-                value={form.image}
-                onChange={(e) =>
-                  setForm({ ...form, image: e.target.value })
-                }
-              />
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    setForm({ ...form, image: e.target.files?.[0] || null })
+                  }
+                  className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm"
+                />
+                {form.image && (
+                  <img
+                    src={URL.createObjectURL(form.image)}
+                    alt="Preview"
+                    className="h-20 w-20 object-cover rounded mt-2"
+                  />
+                )}
+              </div>
 
               <Button onClick={handleSave} className="w-full">
                 Save

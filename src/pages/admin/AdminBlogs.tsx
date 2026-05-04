@@ -9,8 +9,18 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select';
 
+interface Blog {
+  _id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  image?: string;
+  status: 'draft' | 'published';
+  createdAt: string;
+}
+
 const AdminBlogs = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -20,7 +30,7 @@ const AdminBlogs = () => {
     title: '',
     excerpt: '',
     content: '',
-    status: 'draft',
+    status: 'draft' as const,
     image: null as File | null
   });
 
@@ -29,7 +39,7 @@ const AdminBlogs = () => {
   }, []);
 
   // ======================
-  // FETCH BLOGS (FIXED)
+  // FETCH BLOGS
   // ======================
   const fetchBlogs = async () => {
     try {
@@ -92,7 +102,7 @@ const AdminBlogs = () => {
   // ======================
   // EDIT
   // ======================
-  const handleEdit = (blog: any) => {
+  const handleEdit = (blog: Blog) => {
     setEditingId(blog._id);
     setForm({
       title: blog.title,
@@ -178,9 +188,19 @@ const AdminBlogs = () => {
             }
           />
 
+          {form.image && (
+            <div>
+              <img
+                src={URL.createObjectURL(form.image)}
+                alt="Preview"
+                className="w-24 h-24 object-cover rounded-lg"
+              />
+            </div>
+          )}
+
           <Select
             value={form.status}
-            onValueChange={(v) => setForm({ ...form, status: v })}
+            onValueChange={(v) => setForm({ ...form, status: v as 'draft' | 'published' })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -220,27 +240,35 @@ const AdminBlogs = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b">
+                <th className="text-left p-4 text-sm w-20">Image</th>
                 <th className="text-left p-4 text-sm">Title</th>
-                <th className="text-left p-4 text-sm">Status</th>
-<th className="text-right p-4 text-sm">Date</th>
-<th className="text-right p-4 text-sm w-32"></th>
+                <th className="text-left p-4 text-sm w-24">Status</th>
+                <th className="text-right p-4 text-sm w-28">Date</th>
+                <th className="text-right p-4 text-sm w-32">Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog._id} className="border-b hover:bg-muted/50">
-
+                  <td className="p-4">
+                    {blog.image ? (
+                      <img src={blog.image} alt="" className="w-12 h-12 object-cover rounded" />
+                    ) : (
+                      <div className="w-12 h-12 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
+                        No img
+                      </div>
+                    )}
+                  </td>
                   <td className="p-4 font-medium">
                     {blog.title}
                   </td>
 
                   <td>
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      blog.status === 'published'
+                    <span className={`px-2 py-1 rounded-full text-xs ${blog.status === 'published'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-gray-100 text-gray-800'
-                    }`}>
+                      }`}>
                       {blog.status}
                     </span>
                   </td>
@@ -258,7 +286,6 @@ const AdminBlogs = () => {
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -271,3 +298,4 @@ const AdminBlogs = () => {
 };
 
 export default AdminBlogs;
+

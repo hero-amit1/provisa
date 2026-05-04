@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Plus, Pencil, Trash2, Loader2, Users } from "lucide-react";
 import { teamAPI } from '@/lib/api';
+import { Button } from "@/components/ui/button";
 
 interface TeamMember {
   _id: string;
@@ -16,7 +17,7 @@ const AdminTeam = () => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [showForm, setShowForm] = useState(false);
-const [form, setForm] = useState({ name: "", role: "", image: null as File | null, bio: "" });
+  const [form, setForm] = useState({ name: "", role: "", image: null as File | null, bio: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const [form, setForm] = useState({ name: "", role: "", image: null as File | nul
       loadTeam();
       setShowForm(false);
       setEditing(null);
-setForm({ name: "", role: "", image: null as File | null, bio: "" });
+      setForm({ name: "", role: "", image: null as File | null, bio: "" });
     } catch (err) {
       alert('Save failed');
     } finally {
@@ -85,7 +86,7 @@ setForm({ name: "", role: "", image: null as File | null, bio: "" });
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-heading font-semibold text-lg text-foreground">Manage Team</h2>
         <button
-onClick={() => { setShowForm(true); setEditing(null); setForm({ name: "", role: "", image: null }); }}
+          onClick={() => { setShowForm(true); setEditing(null); setForm({ name: "", role: "", image: null, bio: "" }); }}
           className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold"
         >
           <Plus className="h-4 w-4" /> Add Member
@@ -108,9 +109,9 @@ onClick={() => { setShowForm(true); setEditing(null); setForm({ name: "", role: 
             <label className="block text-sm font-medium text-muted-foreground mb-2">Bio/Description</label>
             <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Short bio..." rows={3} className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-vertical" />
             <div className="flex gap-3">
-  <button onClick={handleSave} disabled={saving} className="bg-primary text-primary-foreground px-6 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
-            </button>
+              <button onClick={handleSave} disabled={saving} className="bg-primary text-primary-foreground px-6 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
+              </button>
               <button onClick={() => { setShowForm(false); setEditing(null); }} className="bg-muted text-foreground px-6 py-2 rounded-lg text-sm">Cancel</button>
             </div>
           </div>
@@ -119,19 +120,19 @@ onClick={() => { setShowForm(true); setEditing(null); setForm({ name: "", role: 
 
       <div className="bg-background border border-border rounded-xl overflow-hidden">
         <table className="w-full">
-<thead><tr className="border-b border-border">
-<th className="w-16 text-center p-4"></th>
-<th className="text-left p-4 text-sm font-medium text-muted-foreground">Name</th>
-<th className="text-left p-4 text-sm font-medium text-muted-foreground">Role</th>
-<th className="max-w-xs text-left p-4 text-sm font-medium text-muted-foreground">Bio</th>
-<th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
+          <thead><tr className="border-b border-border">
+            <th className="w-16 text-center p-4"></th>
+            <th className="text-left p-4 text-sm font-medium text-muted-foreground">Name</th>
+            <th className="text-left p-4 text-sm font-medium text-muted-foreground">Role</th>
+            <th className="max-w-xs text-left p-4 text-sm font-medium text-muted-foreground">Bio</th>
+            <th className="text-right p-4 text-sm font-medium text-muted-foreground">Actions</th>
           </tr></thead>
           <tbody>
             {team.map((m) => (
               <tr key={m._id} className="border-b border-border last:border-0 hover:bg-muted">
                 <td className="p-4">
                   {m.image ? (
-                    <img src={`http://localhost:4000${m.image}`} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
+                    <img src={m.image} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
                   ) : (
                     <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                       <Users className="h-6 w-6 text-muted-foreground" />

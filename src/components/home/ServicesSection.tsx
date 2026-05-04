@@ -7,7 +7,7 @@ const services = [
   { _id: '3', title: 'Career Counseling', description: 'Career guidance and job market insights.' },
   { _id: '4', title: 'Finance & Scholarship', description: 'Scholarship search and financial planning.' },
   { _id: '5', title: 'Visa Guidance', description: 'Complete visa application assistance.' },
-  { _id: '6', title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' },
+  { _id: '6', title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' }
 ];
 
 const ServicesSection = () => {
@@ -37,13 +37,13 @@ const ServicesSection = () => {
           {services.map((service, index) => {
             const Icon = getIcon(service.title);
             return (
-                <Link
-                key={service._id}
-                to={`/services`}
-                className="group bg-card border border-border rounded-xl p-6 card-hover data-scroll-reveal animate-scale-in"
-                style={{ '--order': index + 1 } as React.CSSProperties}
-              >
-                <Icon className="h-12 w-12 text-primary mb-4 animate-rotate-in animation-delay-100 group-hover:animate-spin-slow" />
+<Link
+                  key={service._id}
+                  to={`/services`}
+                  className="group bg-card border border-border rounded-xl p-6 card-hover data-scroll-reveal animate-scale-in"
+                  style={{ '--order': index + 1 } as React.CSSProperties}
+                >
+                  <Icon className="h-12 w-12 text-primary mb-4 animate-rotate-in animation-delay-100 group-hover:animate-spin-slow" />
                 <h3 className="font-heading font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors animate-fade-in-up">
                   {service.title}
                 </h3>

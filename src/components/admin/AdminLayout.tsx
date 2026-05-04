@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, FileText, Users, MessageSquare,
   GraduationCap, Settings, LogOut, Menu,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Send
 } from "lucide-react";
 
 const sidebarItems = [
@@ -12,7 +12,7 @@ const sidebarItems = [
   { label: "Team", path: "/admin/team", icon: Users },
   { label: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
   { label: "Universities", path: "/admin/universities", icon: GraduationCap },
-  { label: "Inquiries", path: "/admin/inquiries", icon: MessageSquare },
+  { label: "Inquiries", path: "/admin/inquiries", icon: Send },
   { label: "Settings", path: "/admin/settings", icon: Settings },
 ];
 

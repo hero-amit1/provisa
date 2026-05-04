@@ -4,13 +4,13 @@ import { Menu, X, ChevronDown, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const abroadStudyLinks = [
-  { label: "Australia", path: "/study-abroad/australia" },
+  { label: "USA", path: "/study-abroad/usa" },
+  { label: "UK", path: "/study-abroad/uk" },
   { label: "Japan", path: "/study-abroad/japan" },
   { label: "Canada", path: "/study-abroad/canada" },
-  { label: "Europe", path: "/study-abroad/europe" },
-  { label: "USA", path: "/study-abroad/usa" },
-  { label: "South Korea", path: "/study-abroad/south-korea" },
+  { label: "Australia", path: "/study-abroad/australia" },
 ];
+
 
 const serviceLinks = [
   { label: "Study Pathway Consultation", path: "/services/study-pathway" },
@@ -23,7 +23,17 @@ const serviceLinks = [
 
 const testPrepLinks = [
   { label: "IELTS", path: "/test-prep/ielts" },
+  { label: "TOEFL", path: "/test-prep/toefl" },
+  { label: "SAT", path: "/test-prep/sat" },
   { label: "PTE", path: "/test-prep/pte" },
+  { label: "Japanese Language", path: "/test-prep/japanese" },
+];
+
+const resourcesLinks = [
+  { label: "Interview Preparation", path: "/resources/interview-prep" },
+  { label: "Biodata", path: "/resources/biodata" },
+  { label: "Statement of Purpose", path: "/resources/sop" },
+  { label: "Course Selection", path: "/resources/course-selection" },
 ];
 
 const navItems = [
@@ -36,7 +46,10 @@ const navItems = [
   { label: "Team", path: "/team" },
   { label: "FAQ", path: "/faq" },
   { label: "Universities", path: "/universities" },
+  { label: "Resources", dropdown: resourcesLinks },
+
 ];
+
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,15 +72,15 @@ const Navbar = () => {
                 key={item.label}
                 className="relative group data-scroll-reveal"
                 style={{ '--order': index + 1 } as React.CSSProperties}
-                onMouseEnter={() => setOpenDropdown(item.label)}
-                onMouseLeave={() => setOpenDropdown(null)}
+                onMouseEnter={() => setTimeout(() => setOpenDropdown(item.label), 150)}
+                onMouseLeave={() => setTimeout(() => setOpenDropdown(null), 200)}
               >
                 <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors animate-fade-in-up">
                   {item.label}
                   <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {openDropdown === item.label && (
-                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-lg py-2 min-w-[220px] animate-fade-in-up">
+                  <div className="absolute top-full left-0 bg-background border border-border rounded-lg shadow-lg py-2 min-w-[220px] animate-fade-in-up transition-all duration-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible delay-150">
                     {item.dropdown.map((link) => (
                       <Link
                         key={link.path}

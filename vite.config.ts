@@ -25,6 +25,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
 
+  assetsInclude: ['**/*.PNG', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg'],
+
   plugins: [
     react(),
     mode === "development" && componentTagger(),
@@ -44,3 +46,4 @@ export default defineConfig(({ mode }) => ({
     ],
   },
 }));
+

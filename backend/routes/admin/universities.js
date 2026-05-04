@@ -1,6 +1,7 @@
 const express = require('express');
 const University = require('../../models/University');
 const auth = require('../../middleware/auth');
+const upload = require('../../middleware/upload');
 const router = express.Router();
 
 router.get('/', auth, async (req, res) => {
@@ -12,9 +13,14 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
-    const university = new University(req.body);
+    const imagePath = req.file ? `/uploads/universities/${req.file.filename}` : undefined;
+    const university = new University({
+      name: req.body.name,
+      country: req.body.country,
+      image: imagePath
+    });
     await university.save();
     res.status(201).json(university);
   } catch (err) {
@@ -22,9 +28,16 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, upload.single('image'), async (req, res) => {
   try {
-    const university = await University.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const updateData = {
+      name: req.body.name,
+      country: req.body.country
+    };
+    if (req.file) {
+      updateData.image = `/uploads/universities/${req.file.filename}`;
+    }
+    const university = await University.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
     if (!university) return res.status(404).json({ error: 'University not found' });
     res.json(university);
   } catch (err) {

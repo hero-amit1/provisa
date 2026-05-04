@@ -46,7 +46,7 @@ const TeamPage = () => {
             {teamMembers.map((member) => (
               <div key={member._id} className="bg-card border border-border rounded-xl p-6 text-center card-hover">
                 {member.image ? (
-                  <img src={`http://localhost:4000${member.image}`} alt={member.name} className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg" />
+                  <img src={member.image} alt={member.name} className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg" />
                 ) : (
                   <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
                     <Users className="h-10 w-10 text-muted-foreground" />

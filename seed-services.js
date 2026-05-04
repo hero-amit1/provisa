@@ -14,11 +14,12 @@ async function seedServices() {
     { title: 'Career Counseling', description: 'Career guidance and job market insights.' },
     { title: 'Finance & Scholarship', description: 'Scholarship search and financial planning.' },
     { title: 'Visa Guidance', description: 'Complete visa application assistance.' },
-    { title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' }
+    { title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' },
+    { title: 'Test Preparation', description: 'IELTS, TOEFL, SAT, PTE, Japanese Language coaching with expert tutors.' }
   ];
   
   await Service.insertMany(services);
-  console.log('Seeded 6 services');
+  console.log('Seeded 7 services');
   process.exit(0);
 }
 

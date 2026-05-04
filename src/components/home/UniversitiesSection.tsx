@@ -39,20 +39,30 @@ const UniversitiesSection = () => {
             Top universities we are partnered with around the world.
           </p>
         </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 data-scroll-reveal">
-          {universities.slice(0, 12).map((uni, index) => (
-            <div 
-              key={uni._id} 
-              className="group bg-card border border-border rounded-xl p-6 text-center card-hover data-scroll-reveal animate-scale-in stagger-1"
-              style={{ '--order': index + 1 } as React.CSSProperties}
-            >
-              <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                <GraduationCap className="h-8 w-8 text-primary animate-bounce-in animation-delay-100" />
+          {universities.slice(0, 12).map((uni, index) => {
+            // Alternating slide animation based on column position
+            const colIndex = index % 5;
+            const slideAnimation = colIndex % 2 === 0 ? 'animate-slide-in-left' : 'animate-slide-in-right';
+
+            return (
+              <div
+                key={uni._id}
+                className={`group bg-card border border-border rounded-xl p-6 text-center card-hover data-scroll-reveal ${slideAnimation} group-hover:shadow-2xl group-hover:border-primary/30`}
+                style={{
+                  '--order': index + 1,
+                  transitionDelay: `${index * 80}ms`
+                } as React.CSSProperties}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 overflow-hidden">
+                  <GraduationCap className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground text-sm group-hover:text-primary transition-colors duration-300">{uni.name}</h3>
+                <p className="text-xs text-muted-foreground mt-1 group-hover:text-primary/80 transition-colors duration-300">{uni.country}</p>
               </div>
-              <h3 className="font-heading font-semibold text-foreground text-sm group-hover:text-primary transition-colors">{uni.name}</h3>
-              <p className="text-xs text-muted-foreground mt-1">{uni.country}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

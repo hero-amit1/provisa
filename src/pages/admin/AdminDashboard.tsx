@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { blogsAPI, teamAPI, testimonialsAPI, universitiesAPI, inquiriesAPI } from "@/lib/api";
-import { FileText, Users, MessageSquare, GraduationCap, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { FileText, Users, MessageSquare, GraduationCap, TrendingUp, AlertCircle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -13,29 +16,41 @@ const AdminDashboard = () => {
     inquiries: 0
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     const loadStats = async () => {
       setLoading(true);
+      setError('');
       try {
         const [
           blogs, team, testimonials, universities, inquiries
         ] = await Promise.all([
-          blogsAPI.getAllPublic(),
-          teamAPI.getAllPublic(),
-          testimonialsAPI.getAllPublic(),
-          universitiesAPI.getAllPublic(),
+          blogsAPI.getAll(),
+          teamAPI.getAll(),
+          testimonialsAPI.getAll(),
+          universitiesAPI.getAll(),
           inquiriesAPI.getAll()
         ]);
         setStats({
-          blogs: blogs.length,
-          team: team.length,
-          testimonials: testimonials.length,
-          universities: universities.length,
-          inquiries: inquiries.length
+          blogs: Array.isArray(blogs) ? blogs.length : blogs?.data?.length || 0,
+          team: Array.isArray(team) ? team.length : team?.data?.length || 0,
+          testimonials: Array.isArray(testimonials) ? testimonials.length : testimonials?.data?.length || 0,
+          universities: Array.isArray(universities) ? universities.length : universities?.data?.length || 0,
+          inquiries: Array.isArray(inquiries) ? inquiries.length : inquiries?.data?.length || 0
         });
-      } catch {}
-      setLoading(false);
+      } catch (err: any) {
+        const msg = err.message || 'Failed to load dashboard';
+        setError(msg);
+        toast({
+          title: "Dashboard Error",
+          description: msg,
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
     };
     loadStats();
   }, []);

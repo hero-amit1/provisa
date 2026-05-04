@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
 import { inquiriesAPI } from "@/lib/api";
+import { Textarea } from "@/components/ui/textarea";
 
 const AppointmentPage = () => {
   const [form, setForm] = useState({
@@ -95,7 +96,7 @@ const AppointmentPage = () => {
               <label className="block text-sm mb-2 font-medium">
                 Message
               </label>
-              <textarea
+              <Textarea
                 rows={4}
                 value={form.message}
                 onChange={(e) => handleChange("message", e.target.value)}
@@ -126,7 +127,14 @@ export default AppointmentPage;
 
 
 // 🔹 Reusable Input Component
-const Input = ({ label, value, onChange, type = "text" }: any) => (
+interface InputProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+}
+
+const Input = ({ label, value, onChange, type = "text" }: InputProps) => (
   <div>
     <label className="block text-sm mb-1 font-medium">{label}</label>
     <input
@@ -140,7 +148,12 @@ const Input = ({ label, value, onChange, type = "text" }: any) => (
 );
 
 // 🔹 Reusable Select Component
-const Select = ({ label, onChange }: any) => (
+interface SelectProps {
+  label: string;
+  onChange: (value: string) => void;
+}
+
+const Select = ({ label, onChange }: SelectProps) => (
   <div>
     <label className="block text-sm mb-1 font-medium">{label}</label>
     <select
@@ -148,8 +161,11 @@ const Select = ({ label, onChange }: any) => (
       className="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-orange-500 outline-none"
     >
       <option>--- Select ---</option>
-      <option>Option 1</option>
-      <option>Option 2</option>
+      <option>IELTS</option>
+      <option>TOEFL</option>
+      <option>SAT</option>
+      <option>PTE</option>
+      <option>Japanese Language</option>
     </select>
   </div>
 );

@@ -8,6 +8,7 @@ const inquirySchema = new mongoose.Schema({
   time: { type: String },
   country: { type: String },
   message: { type: String, required: true },
+  type: { type: String, enum: ['contact', 'appointment'], default: 'contact' },
   status: { type: String, enum: ['new', 'contacted', 'closed'], default: 'new' }
 }, { timestamps: true });
 

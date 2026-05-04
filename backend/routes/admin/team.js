@@ -15,11 +15,14 @@ router.get('/', auth, async (req, res) => {
 });
 
 // POST create
-router.post('/', auth, upload, async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
+    const imagePath = req.file ? `/uploads/team/${req.file.filename}` : undefined;
     const teamMember = new Team({
-      ...req.body,
-      image: req.file ? `/uploads/team/${req.file.filename}` : null
+      name: req.body.name,
+      role: req.body.role,
+      bio: req.body.bio,
+      image: imagePath
     });
     await teamMember.save();
     res.status(201).json(teamMember);
@@ -29,9 +32,13 @@ router.post('/', auth, upload, async (req, res) => {
 });
 
 // PUT update
-router.put('/:id', auth, upload, async (req, res) => {
+router.put('/:id', auth, upload.single('image'), async (req, res) => {
   try {
-    const updateData = req.body;
+    const updateData = {
+      name: req.body.name,
+      role: req.body.role,
+      bio: req.body.bio
+    };
     if (req.file) {
       updateData.image = `/uploads/team/${req.file.filename}`;
     }

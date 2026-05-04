@@ -30,7 +30,7 @@ const AdminTestimonials = () => {
   const [items, setItems] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
-const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5 });
+  const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5 });
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const { toast } = useToast();
@@ -73,8 +73,8 @@ const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5
       setEditingId(null);
       setForm({ name: '', university: '', text: '', rating: 5 });
 
-    } catch (error: any) {
-      const errorMsg = error?.message || 'Save failed';
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Save failed';
       setError(errorMsg);
 
       toast({
@@ -103,10 +103,10 @@ const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5
         description: "Testimonial removed successfully",
       });
 
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Delete failed",
-        description: error?.message || 'Unknown error',
+        description: error instanceof Error ? error.message : 'Unknown error',
         variant: "destructive",
       });
     }
@@ -177,7 +177,7 @@ const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1,2,3,4,5].map((r) => (
+                  {[1, 2, 3, 4, 5].map((r) => (
                     <SelectItem key={r} value={r.toString()}> {r} Stars </SelectItem>
                   ))}
                 </SelectContent>
@@ -227,7 +227,7 @@ const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5
                     </span>
 
                     <div className="flex items-center gap-1 ml-auto">
-                      {Array.from({length: 5}, (_, i) => (
+                      {Array.from({ length: 5 }, (_, i) => (
                         <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
                       ))}
                     </div>

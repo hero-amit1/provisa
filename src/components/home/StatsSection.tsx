@@ -30,7 +30,7 @@ const StatCard = ({ stat, index }: any) => {
     return () => clearInterval(timer);
   }, [stat.value]);
 
-  return (
+return (
     <div
       className="group relative bg-background border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
       style={{ animationDelay: `${index * 100}ms` }}

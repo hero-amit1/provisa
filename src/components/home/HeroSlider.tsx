@@ -39,7 +39,7 @@ const HeroSlider = () => {
     };
   }, [current]);
 
-  return (
+return (
     <section className="relative h-[550px] md:h-[700px] lg:h-[800px] overflow-hidden">
 
       {/* BACKGROUND SLIDES */}
@@ -66,7 +66,7 @@ const HeroSlider = () => {
       {/* CONTENT */}
       <div className="relative z-10 flex items-center justify-center h-full px-4">
 
-        <div
+<div
           key={current}
           className="max-w-3xl text-center animate-fade-in-up"
         >

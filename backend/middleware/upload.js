@@ -3,7 +3,7 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'backend/public/uploads/');
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -24,4 +24,4 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
 
-module.exports = upload.single('image');
+module.exports = upload;

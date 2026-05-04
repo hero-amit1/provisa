@@ -71,11 +71,17 @@ const TestimonialsSection = () => {
               .join("")
               .toUpperCase();
 
+            // Alternating slide animation: odd cards slide from left, even from right
+            const slideAnimation = index % 2 === 0 ? 'animate-slide-in-left' : 'animate-slide-in-right';
+
             return (
               <div
                 key={t._id}
-                className="group relative bg-gradient-to-br from-background to-muted/30 border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                style={{ '--order': index + 1 } as React.CSSProperties}
+                className={`group relative bg-gradient-to-br from-background to-muted/30 border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] ${slideAnimation}`}
+                style={{
+                  '--order': index + 1,
+                  transitionDelay: `${index * 100}ms`
+                } as React.CSSProperties}
               >
 
                 {/* TOP */}
@@ -98,7 +104,7 @@ const TestimonialsSection = () => {
                       </span>
 
                       <div className="flex items-center gap-1 ml-auto">
-                        {Array.from({length: 5}, (_, i) => (
+                        {Array.from({ length: 5 }, (_, i) => (
                           <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
                         ))}
                       </div>
