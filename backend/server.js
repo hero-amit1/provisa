@@ -44,12 +44,15 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
+
     const allowedOrigins = [
       CLIENT_URL,
       'http://localhost:5173',
       'http://localhost:8080',
+      'http://localhost:8081',
       'http://localhost:4000'
     ];
+
     if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com')) {
       callback(null, true);
     } else {

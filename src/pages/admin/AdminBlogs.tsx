@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
 
 interface Blog {
@@ -19,6 +23,8 @@ interface Blog {
   createdAt: string;
 }
 
+type StatusType = 'draft' | 'published';
+
 const AdminBlogs = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +36,7 @@ const AdminBlogs = () => {
     title: '',
     excerpt: '',
     content: '',
-    status: 'draft' as const,
+    status: 'draft' as StatusType,
     image: null as File | null
   });
 
@@ -38,9 +44,6 @@ const AdminBlogs = () => {
     fetchBlogs();
   }, []);
 
-  // ======================
-  // FETCH BLOGS
-  // ======================
   const fetchBlogs = async () => {
     try {
       const res = await blogsAPI.getAll();
@@ -50,16 +53,13 @@ const AdminBlogs = () => {
         : res?.data || [];
 
       setBlogs(blogData);
-    } catch (err) {
+    } catch {
       console.error('Failed to fetch blogs');
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================
-  // SUBMIT (WITH IMAGE)
-  // ======================
   const handleSubmit = async () => {
     setSaving(true);
 
@@ -91,32 +91,25 @@ const AdminBlogs = () => {
       });
 
       fetchBlogs();
-
-    } catch (err) {
+    } catch {
       console.error('Save failed');
     } finally {
       setSaving(false);
     }
   };
 
-  // ======================
-  // EDIT
-  // ======================
   const handleEdit = (blog: Blog) => {
     setEditingId(blog._id);
     setForm({
       title: blog.title,
       excerpt: blog.excerpt || '',
       content: blog.content || '',
-      status: blog.status || 'draft',
+      status: blog.status,
       image: null
     });
     setShowForm(true);
   };
 
-  // ======================
-  // DELETE
-  // ======================
   const handleDelete = async (id: string) => {
     if (confirm('Delete blog?')) {
       try {
@@ -140,8 +133,6 @@ const AdminBlogs = () => {
 
   return (
     <AdminLayout>
-
-      {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-semibold text-lg">Manage Blogs</h2>
         <Button onClick={() => {
@@ -153,7 +144,6 @@ const AdminBlogs = () => {
         </Button>
       </div>
 
-      {/* FORM */}
       {showForm && (
         <div className="bg-background border rounded-xl p-6 mb-6 space-y-4">
           <h3 className="font-semibold">
@@ -179,28 +169,34 @@ const AdminBlogs = () => {
             onChange={(e) => setForm({ ...form, content: e.target.value })}
           />
 
-          {/* IMAGE UPLOAD */}
+          <label className="block text-sm font-medium mb-2">
+            Image
+          </label>
           <input
             type="file"
             accept="image/*"
             onChange={(e) =>
               setForm({ ...form, image: e.target.files?.[0] || null })
             }
+            className="w-full px-4 py-2 border rounded-lg"
           />
 
           {form.image && (
-            <div>
+            <div className="mt-2">
               <img
                 src={URL.createObjectURL(form.image)}
                 alt="Preview"
-                className="w-24 h-24 object-cover rounded-lg"
+                className="w-24 h-24 object-cover rounded-lg border"
               />
             </div>
           )}
 
+          <label className="block text-sm font-medium mb-2">
+            Status
+          </label>
           <Select
             value={form.status}
-            onValueChange={(v) => setForm({ ...form, status: v as 'draft' | 'published' })}
+            onValueChange={(v) => setForm({ ...form, status: v as StatusType })}
           >
             <SelectTrigger>
               <SelectValue />
@@ -230,7 +226,6 @@ const AdminBlogs = () => {
         </div>
       )}
 
-      {/* TABLE */}
       <div className="bg-background border rounded-xl overflow-hidden">
         {blogs.length === 0 ? (
           <div className="p-10 text-center text-muted-foreground">
@@ -247,7 +242,6 @@ const AdminBlogs = () => {
                 <th className="text-right p-4 text-sm w-32">Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog._id} className="border-b hover:bg-muted/50">
@@ -263,25 +257,21 @@ const AdminBlogs = () => {
                   <td className="p-4 font-medium">
                     {blog.title}
                   </td>
-
                   <td>
                     <span className={`px-2 py-1 rounded-full text-xs ${blog.status === 'published'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-800'
                       }`}>
                       {blog.status}
                     </span>
                   </td>
-
                   <td className="p-4 text-sm text-muted-foreground">
                     {new Date(blog.createdAt).toLocaleDateString()}
                   </td>
-
                   <td className="p-4 text-right space-x-2">
                     <Button size="sm" variant="outline" onClick={() => handleEdit(blog)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
-
                     <Button size="sm" variant="destructive" onClick={() => handleDelete(blog._id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -292,7 +282,6 @@ const AdminBlogs = () => {
           </table>
         )}
       </div>
-
     </AdminLayout>
   );
 };
