@@ -10,24 +10,34 @@ const UniversitiesSection = () => {
     const fetchUniversities = async () => {
       try {
         const data = await universitiesAPI.getAllPublic();
-        setUniversities(data);
+        setUniversities(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error('Universities load failed');
-        setUniversities([
-          { _id: '1', name: 'University of Toronto', country: 'Canada' },
-          { _id: '2', name: 'University of Sydney', country: 'Australia' },
-          { _id: '3', name: 'University of Tokyo', country: 'Japan' },
-          { _id: '4', name: 'University of Amsterdam', country: 'Europe' },
-          { _id: '5', name: 'Harvard University', country: 'USA' },
-        ]);
+        console.error('Universities load failed:', err);
+        setUniversities([]);
       } finally {
         setLoading(false);
       }
     };
+
     fetchUniversities();
   }, []);
 
   if (loading) return <div className="section-padding text-center">Loading universities...</div>;
+
+  if (!Array.isArray(universities) || universities.length === 0) {
+    return (
+      <section className="section-padding text-center">
+        <div className="section-container">
+          <GraduationCap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-semibold mb-2">No Partner Universities</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            We're expanding our network of partner universities worldwide.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
 
   return (
     <section className="section-padding data-scroll-reveal" data-animation="slide-up">
