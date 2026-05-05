@@ -10,24 +10,10 @@ const TestimonialsSection = () => {
     const fetchTestimonials = async () => {
       try {
         const data = await testimonialsAPI.getAllPublic();
-        setTestimonials(data);
+        setTestimonials(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error('Testimonials load failed');
-
-        setTestimonials([
-          {
-            _id: '1',
-            text: 'ProVisa team helped me get into my dream university!',
-            name: 'John Doe',
-            university: 'University of Toronto'
-          },
-          {
-            _id: '2',
-            text: 'Excellent visa guidance and interview prep!',
-            name: 'Jane Smith',
-            university: 'University of Sydney'
-          },
-        ]);
+        console.error('Testimonials load failed:', err);
+        setTestimonials([]);
       } finally {
         setLoading(false);
       }
@@ -36,11 +22,26 @@ const TestimonialsSection = () => {
     fetchTestimonials();
   }, []);
 
+
   if (loading) {
     return (
       <div className="py-20 text-center text-muted-foreground">
         Loading testimonials...
       </div>
+    );
+  }
+
+  if (!Array.isArray(testimonials) || testimonials.length === 0) {
+    return (
+      <section className="section-padding text-center">
+        <div className="section-container">
+          <Quote className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-semibold mb-2">No Testimonials Yet</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Be the first to share your success story with ProVisa!
+          </p>
+        </div>
+      </section>
     );
   }
 
