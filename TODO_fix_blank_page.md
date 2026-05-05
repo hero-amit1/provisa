@@ -4,6 +4,7 @@
 - [x] Step 1: Create TODO tracking file (done)
 - [x] Step 2: Edit `src/components/home/UniversitiesSection.tsx` to add array guards and improve error handling
 - [x] Step 2.1: Edit `src/components/home/TestimonialsSection.tsx` to add array guards and improve error handling (fix .map crash)
+- [x] Step 2.2: Edit `src/pages/TeamPage.tsx` to add array guards (preemptive fix for team.map)
 - [x] Step 3: Test locally with `bun dev` or `npm run dev` (Vite server running at http://localhost:8080/ - check browser console/home page)
 - [ ] Step 4: Redeploy frontend to Render
 - [ ] Step 5: Verify no console errors, home page loads

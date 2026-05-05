@@ -12,8 +12,10 @@ const TeamPage = () => {
     const fetchTeam = async () => {
       try {
         const data = await teamAPI.getAllPublic();
-        setTeamMembers(data);
+        setTeamMembers(Array.isArray(data) ? data : []);
       } catch (err) {
+        console.error('Team load failed:', err);
+        setTeamMembers([]);
         setError('Failed to load team');
       } finally {
         setLoading(false);
@@ -22,6 +24,7 @@ const TeamPage = () => {
     fetchTeam();
   }, []);
 
+
   if (loading) return (
     <Layout>
       <div className="min-h-screen flex items-center justify-center">
@@ -29,6 +32,23 @@ const TeamPage = () => {
       </div>
     </Layout>
   );
+
+  if (!Array.isArray(teamMembers) || teamMembers.length === 0) {
+    return (
+      <Layout>
+        <section className="section-padding text-center">
+          <div className="section-container">
+            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No Team Members</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Our expert team is growing. Stay tuned!
+            </p>
+          </div>
+        </section>
+      </Layout>
+    );
+  }
+
 
   return (
     <Layout>
