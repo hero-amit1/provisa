@@ -3,7 +3,16 @@ import { Quote, Star } from "lucide-react";
 import { testimonialsAPI } from '@/lib/api';
 
 const TestimonialsSection = () => {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  type Testimonial = {
+    _id: string;
+    name: string;
+    university: string;
+    text: string;
+    rating?: number;
+  };
+
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -7,9 +7,8 @@ const getApiBase = () => {
   }
   // In production (non-development), try to construct from current origin
   if (import.meta.env.PROD === 'true' || !import.meta.env.DEV) {
-    // For separate Render services, the API should be at the backend URL
-    // This will need VITE_API_BASE_URL set in production build
-    return ''; // Will result in same-origin /api calls
+    // If VITE_API_BASE_URL is NOT set, fall back to same-origin (will work only when frontend & backend share host)
+    return '/api';
   }
   // Development: use proxy or local
   return '/api';
@@ -17,19 +16,25 @@ const getApiBase = () => {
 
 const API_BASE = getApiBase();
 
-const apiFetch = async (endpoint: string, options: any = {}) => {
+type ApiRequestOptions = {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: FormData | string;
+};
+
+const apiFetch = async (endpoint: string, options: ApiRequestOptions = {}) => {
   const token = localStorage.getItem('token');
 
   const isFormData = options.body instanceof FormData;
 
-  const config: any = {
+  const config: RequestInit = {
     method: options.method || 'GET',
     headers: {
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...(!isFormData && { 'Content-Type': 'application/json' }),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
     },
-    body: options.body,
+    body: options.body as BodyInit | undefined,
   };
+
 
   const response = await fetch(`${API_BASE}${endpoint}`, config);
 
@@ -55,23 +60,29 @@ const apiFetch = async (endpoint: string, options: any = {}) => {
 };
 
 // AUTH
+type AnyRecord = Record<string, unknown>;
+
+
+
+// AUTH
 export const authAPI = {
-  login: (credentials: any) =>
+  login: (credentials: AnyRecord) =>
     apiFetch('/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     }),
 };
 
+
 // BLOGS
 export const blogsAPI = {
   getAll: () => apiFetch('/admin/blogs'),
   getById: (id: string) => apiFetch(`/admin/blogs/${id}`),
-  create: (data: any) => apiFetch('/admin/blogs', {
+  create: (data: unknown) => apiFetch('/admin/blogs', {
     method: 'POST',
     body: data instanceof FormData ? data : JSON.stringify(data),
   }),
-  update: (id: string, data: any) => apiFetch(`/admin/blogs/${id}`, {
+  update: (id: string, data: unknown) => apiFetch(`/admin/blogs/${id}`, {
     method: 'PUT',
     body: data instanceof FormData ? data : JSON.stringify(data),
   }),
@@ -84,8 +95,8 @@ export const blogsAPI = {
 export const teamAPI = {
   getAll: () => apiFetch('/admin/team'),
   getAllPublic: () => apiFetch('/team'),
-  create: (data: any) => apiFetch('/admin/team', { method: 'POST', body: data }),
-  update: (id: string, data: any) => apiFetch(`/admin/team/${id}`, { method: 'PUT', body: data }),
+  create: (data: FormData) => apiFetch('/admin/team', { method: 'POST', body: data }),
+  update: (id: string, data: FormData) => apiFetch(`/admin/team/${id}`, { method: 'PUT', body: data }),
   delete: (id: string) => apiFetch(`/admin/team/${id}`, { method: 'DELETE' }),
 };
 
@@ -93,8 +104,8 @@ export const teamAPI = {
 export const testimonialsAPI = {
   getAll: () => apiFetch('/admin/testimonials'),
   getAllPublic: () => apiFetch('/testimonials'),
-  create: (data: any) => apiFetch('/admin/testimonials', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => apiFetch(`/admin/testimonials/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  create: (data: unknown) => apiFetch('/admin/testimonials', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: unknown) => apiFetch(`/admin/testimonials/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id: string) => apiFetch(`/admin/testimonials/${id}`, { method: 'DELETE' }),
 };
 
@@ -102,8 +113,8 @@ export const testimonialsAPI = {
 export const universitiesAPI = {
   getAll: () => apiFetch('/admin/universities'),
   getAllPublic: () => apiFetch('/universities'),
-  create: (data: any) => apiFetch('/admin/universities', { method: 'POST', body: data }),
-  update: (id: string, data: any) => apiFetch(`/admin/universities/${id}`, { method: 'PUT', body: data }),
+  create: (data: FormData) => apiFetch('/admin/universities', { method: 'POST', body: data }),
+  update: (id: string, data: FormData) => apiFetch(`/admin/universities/${id}`, { method: 'PUT', body: data }),
   delete: (id: string) => apiFetch(`/admin/universities/${id}`, { method: 'DELETE' }),
 };
 
@@ -113,17 +124,43 @@ export const inquiriesAPI = {
   getContact: () => apiFetch('/admin/inquiries?type=contact'),
   getAppointments: () => apiFetch('/admin/inquiries?type=appointment'),
   delete: (id: string) => apiFetch(`/admin/inquiries/${id}`, { method: 'DELETE' }),
-  create: (data: any) => apiFetch('/inquiries', { method: 'POST', body: JSON.stringify(data) }),
+  create: (data: unknown) => apiFetch('/inquiries', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 // SERVICES - NEW
 export const servicesAPI = {
   getAll: () => apiFetch('/admin/services'),
   getAllPublic: () => apiFetch('/services'),
-  create: (data: any) => apiFetch('/admin/services', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => apiFetch(`/admin/services/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  create: (data: unknown) => apiFetch('/admin/services', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: unknown) => apiFetch(`/admin/services/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id: string) => apiFetch(`/admin/services/${id}`, { method: 'DELETE' }),
 };
 
+const resolveImageUrl = (imagePath?: string | null): string => {
+  if (!imagePath) return '';
+  if (typeof imagePath !== 'string') return '';
+
+  // already absolute (http/https/data)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+
+  // support relative paths like "/uploads/..." or "uploads/..."
+  const normalized = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+
+  const baseFromEnv = import.meta.env.VITE_API_BASE_URL;
+  if (baseFromEnv && typeof baseFromEnv === 'string' && baseFromEnv.trim()) {
+    const base = baseFromEnv.replace(/\/$/, '');
+    return `${base}${normalized}`;
+  }
+
+  // Fallback: use current origin (works if frontend + backend share a host)
+  // Use an absolute URL so <img> always gets a resolvable URL.
+  return `${window.location.origin}${normalized}`;
+};
+
+
+export { resolveImageUrl };
 export default apiFetch;
+
 

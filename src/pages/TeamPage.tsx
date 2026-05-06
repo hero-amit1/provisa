@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import Layout from "@/components/Layout";
 import { Users } from "lucide-react";
-import { teamAPI } from '@/lib/api';
+import { teamAPI, resolveImageUrl } from '@/lib/api';
+
 
 const TeamPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -66,7 +67,7 @@ const TeamPage = () => {
             {teamMembers.map((member) => (
               <div key={member._id} className="bg-card border border-border rounded-xl p-6 text-center card-hover">
                 {member.image ? (
-                  <img src={member.image} alt={member.name} className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg" />
+                  <img src={resolveImageUrl(member.image)} alt={member.name} className="w-24 h-24 rounded-full mx-auto object-cover shadow-lg" loading="lazy" />
                 ) : (
                   <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
                     <Users className="h-10 w-10 text-muted-foreground" />
