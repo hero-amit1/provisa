@@ -3,16 +3,23 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Calendar } from "lucide-react";
 import logo from "@/assets/logo.png";
 
+
+
+
 const abroadStudyLinks = [
   { label: "USA", path: "/study-abroad/usa" },
   { label: "UK", path: "/study-abroad/uk" },
   { label: "Japan", path: "/study-abroad/japan" },
   { label: "Canada", path: "/study-abroad/canada" },
+  { label: "Europe", path: "/study-abroad/europe" },
   { label: "Australia", path: "/study-abroad/australia" },
 ];
 
 
+
+
 const serviceLinks = [
+
   { label: "Study Pathway Consultation", path: "/services/study-pathway" },
   { label: "Interview Preparation", path: "/services/interview-prep" },
   { label: "Career Counseling", path: "/services/career-counseling" },
@@ -53,6 +60,7 @@ const navItems = [
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const location = useLocation();
 
@@ -61,19 +69,24 @@ const Navbar = () => {
       <div className="section-container flex items-center justify-between h-16 md:h-20">
         <Link to="/" className="flex items-center gap-2 animation-delay-100">
           <img src={logo} alt="ProVisa" className="h-10 md:h-12 animate-fade-in" />
-          
+
         </Link>
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-1 animation-delay-200">
           {navItems.map((item, index) =>
             item.dropdown ? (
+
               <div
+
+
                 key={item.label}
                 className="relative group data-scroll-reveal"
-                style={{ '--order': index + 1 } as React.CSSProperties}
+                style={{ '--order': 1 } as React.CSSProperties}
                 onMouseEnter={() => setTimeout(() => setOpenDropdown(item.label), 150)}
+
                 onMouseLeave={() => setTimeout(() => setOpenDropdown(null), 200)}
+
               >
                 <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors animate-fade-in-up">
                   {item.label}
@@ -97,11 +110,10 @@ const Navbar = () => {
               <Link
                 key={item.label}
                 to={item.path!}
-                className={`px-3 py-2 text-sm font-medium transition-colors data-scroll-reveal animate-fade-in-up animation-delay-300 ${
-                  location.pathname === item.path
-                    ? "text-primary"
-                    : "text-foreground hover:text-primary"
-                }`}
+                className={`px-3 py-2 text-sm font-medium transition-colors data-scroll-reveal animate-fade-in-up animation-delay-300 ${location.pathname === item.path
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary"
+                  }`}
                 style={{ '--order': index + 1 } as React.CSSProperties}
               >
                 {item.label}
@@ -131,8 +143,10 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="lg:hidden bg-background border-t border-border animate-slide-up">
           <div className="section-container py-4 space-y-2">
-            {navItems.map((item, index) =>
+            {navItems.map((item) =>
+
               item.dropdown ? (
+
                 <div key={item.label} className="data-scroll-reveal">
                   <button
                     onClick={() =>
@@ -142,9 +156,8 @@ const Navbar = () => {
                   >
                     {item.label}
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        openDropdown === item.label ? "rotate-180" : ""
-                      }`}
+                      className={`h-4 w-4 transition-transform ${openDropdown === item.label ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
                   {openDropdown === item.label && (

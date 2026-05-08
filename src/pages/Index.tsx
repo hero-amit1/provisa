@@ -6,6 +6,8 @@ import AbroadStudySection from "@/components/home/AbroadStudySection";
 import AboutPreview from "@/components/home/AboutPreview";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import UniversitiesSection from "@/components/home/UniversitiesSection";
+import FloatingSocialIcons from "@/components/home/FloatingSocialIcons";
+
 
 const Index = () => {
   return (
@@ -17,6 +19,8 @@ const Index = () => {
       <AboutPreview />
       <TestimonialsSection />
       <UniversitiesSection />
+      {/* Floating social icons */}
+      <FloatingSocialIcons />
     </Layout>
   );
 };

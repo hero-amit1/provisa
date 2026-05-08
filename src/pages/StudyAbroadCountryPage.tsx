@@ -1,6 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import usaImg from "@/assets/usa.jpg";
+import europeImg from "@/assets/europe.jpg";
+// UK image file not present in repo; reusing UK study image asset
+const ukImg = europeImg;
+
+import japanImg from "@/assets/japan.jpg";
+import canadaImg from "@/assets/canada.jpg";
+import australiaImg from "@/assets/australia.jpg";
 import {
   MapPin, GraduationCap, Users, DollarSign,
   BookOpen, Users2, Briefcase, Globe, Award, Shield, Calendar, FileText
@@ -17,6 +24,12 @@ const countryData = {
   japan: { name: "Japan", flag: "🇯🇵", stats: { unis: "800+", intlStudents: "300K+", avgTuition: "¥1M" } },
   canada: { name: "Canada", flag: "🇨🇦", stats: { unis: "100+", intlStudents: "800K+", avgTuition: "CAD25K" } },
   australia: { name: "Australia", flag: "🇦🇺", stats: { unis: "40+", intlStudents: "500K+", avgTuition: "AUD35K" } },
+  europe: {
+    name: "Europe",
+    flag: "🌍",
+    stats: { unis: "2,000+", intlStudents: "1.2M+", avgTuition: "€15K" },
+    hasFullContent: false as const,
+  },
 };
 
 type CountryKey = keyof typeof countryData;
@@ -27,14 +40,24 @@ const StudyAbroadCountryPage = () => {
   const data = countryData[key];
 
   const isUSA = key === "usa";
+  const heroByKey: Partial<Record<CountryKey, string>> = {
+    usa: usaImg,
+    uk: ukImg,
+    japan: japanImg,
+    canada: canadaImg,
+    australia: australiaImg,
+    europe: europeImg,
+  };
+
+  const heroImg = heroByKey[key] ?? usaImg;
 
   return (
     <Layout>
-      {/* Hero with USA Photo */}
+      {/* Hero */}
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
         <img
-          src={usaImg}
-          alt="USA Study Abroad"
+          src={heroImg}
+          alt={`Study Abroad in ${data?.name ?? ""}`}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
@@ -73,8 +96,11 @@ const StudyAbroadCountryPage = () => {
 
         {/* CTA */}
         <div className="text-center mb-24">
-          <Link to="/appointment" className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-10 py-6 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300">
-            Start Your USA Journey
+          <Link
+            to="/appointment"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 text-primary-foreground px-10 py-6 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300"
+          >
+            Start Your {data?.name ?? ""} Journey
             <MapPin className="h-6 w-6" />
           </Link>
         </div>
@@ -339,7 +365,7 @@ const StudyAbroadCountryPage = () => {
         {/* Final CTA */}
         <div className="text-center mt-24 pt-20 border-t border-border">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-orange-500 to-red-500 bg-clip-text text-transparent">
-            Ready to Study in USA?
+            Ready to Study in {data?.name}?
           </h2>
           <Link to="/appointment" className="inline-flex items-center gap-4 bg-gradient-to-r from-primary via-orange-500 to-red-500 text-primary-foreground px-12 py-6 rounded-3xl text-2xl font-bold shadow-2xl hover:shadow-3xl hover:scale-[1.02] transition-all duration-300 group">
             Book Free Consultation Now
