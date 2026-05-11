@@ -118,6 +118,17 @@ export const universitiesAPI = {
   delete: (id: string) => apiFetch(`/admin/universities/${id}`, { method: 'DELETE' }),
 };
 
+// SETTINGS
+export const settingsAPI = {
+  getPublic: () => apiFetch('/settings'),
+  getAdmin: () => apiFetch('/admin/settings'),
+  updateAdmin: (data: Record<string, unknown>) =>
+    apiFetch('/admin/settings', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+};
+
 // INQUIRIES
 export const inquiriesAPI = {
   getAll: () => apiFetch('/admin/inquiries'),
@@ -129,6 +140,7 @@ export const inquiriesAPI = {
 
 // SERVICES - NEW
 export const servicesAPI = {
+
   getAll: () => apiFetch('/admin/services'),
   getAllPublic: () => apiFetch('/services'),
   create: (data: unknown) => apiFetch('/admin/services', { method: 'POST', body: JSON.stringify(data) }),

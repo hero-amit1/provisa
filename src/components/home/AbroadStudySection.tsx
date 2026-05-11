@@ -1,18 +1,69 @@
 import { Link } from "react-router-dom";
 import australiaImg from "@/assets/australia.jpg";
-import japanImg from "@/assets/japan.jpg";
-import canadaImg from "@/assets/canada.jpg";
 import europeImg from "@/assets/europe.jpg";
 import usaImg from "@/assets/usa.jpg";
 import southkoreaImg from "@/assets/southkorea.jpg";
+import indiaImg from "@/assets/Md.jpg";
+import chinaImg from "@/assets/Md.jpg";
+import japanImg from "@/assets/japan.jpg";
+import canadaImg from "@/assets/canada.jpg";
+import ukImg from "@/assets/europe.jpg";
 
 const countries = [
-  { name: "Australia", image: australiaImg, path: "/study-abroad/australia", desc: "Top-ranked universities and global opportunities." },
-  { name: "Japan", image: japanImg, path: "/study-abroad/japan", desc: "Advanced education with innovation and culture." },
-  { name: "Canada", image: canadaImg, path: "/study-abroad/canada", desc: "Affordable education with PR opportunities." },
-  { name: "Europe", image: europeImg, path: "/study-abroad/europe", desc: "Diverse programs across top EU universities." },
-  { name: "USA", image: usaImg, path: "/study-abroad/usa", desc: "World-leading universities and research hubs." },
-  { name: "South Korea", image: southkoreaImg, path: "/study-abroad/south-korea", desc: "Modern education with tech-driven learning." },
+  {
+    name: "USA",
+    image: usaImg,
+    path: "/study-abroad/usa",
+    desc: "World-leading universities and research hubs.",
+  },
+  {
+    name: "UK",
+    image: ukImg,
+    path: "/study-abroad/uk",
+    desc: "Prestigious universities and short, intensive programs.",
+  },
+  {
+    name: "Canada",
+    image: canadaImg,
+    path: "/study-abroad/canada",
+    desc: "High quality of life with excellent post-grad opportunities.",
+  },
+  {
+    name: "Japan",
+    image: japanImg,
+    path: "/study-abroad/japan",
+    desc: "Advanced technology education with a rich cultural experience.",
+  },
+  {
+    name: "Europe",
+    image: europeImg,
+    path: "/study-abroad/europe",
+    desc: "Diverse programs across top European universities.",
+  },
+  {
+    name: "Australia",
+    image: australiaImg,
+    path: "/study-abroad/australia",
+    desc: "Top-ranked universities with global opportunities.",
+  },
+  {
+    name: "India",
+    image: indiaImg,
+    path: "/study-abroad/india",
+    desc: "Quality education with global opportunities.",
+  },
+  {
+    name: "China",
+    image: chinaImg,
+    path: "/study-abroad/china",
+    desc: "Affordable degrees and world-class universities.",
+  },
+  {
+    name: "South Korea",
+    image: southkoreaImg,
+    path: "/study-abroad/south-korea",
+    desc: "Modern education with tech-driven learning.",
+  },
 ];
 
 const AbroadStudySection = () => {

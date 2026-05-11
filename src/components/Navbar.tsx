@@ -7,12 +7,15 @@ import logo from "@/assets/logo.png";
 
 
 const abroadStudyLinks = [
-  { label: "USA", path: "/study-abroad/usa" },
-  { label: "UK", path: "/study-abroad/uk" },
-  { label: "Japan", path: "/study-abroad/japan" },
-  { label: "Canada", path: "/study-abroad/canada" },
-  { label: "Europe", path: "/study-abroad/europe" },
   { label: "Australia", path: "/study-abroad/australia" },
+  { label: "Canada", path: "/study-abroad/canada" },
+  { label: "China", path: "/study-abroad/china" },
+  { label: "Europe", path: "/study-abroad/europe" },
+  { label: "India", path: "/study-abroad/india" },
+  { label: "Japan", path: "/study-abroad/japan" },
+  { label: "South Korea", path: "/study-abroad/south-korea" },
+  { label: "UK", path: "/study-abroad/uk" },
+  { label: "USA", path: "/study-abroad/usa" },
 ];
 
 

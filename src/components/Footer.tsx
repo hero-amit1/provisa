@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import logo from "@/assets/logo.png";
+import ContactTopInfo from "@/components/ContactTopInfo";
 
 const Footer = () => {
   return (
@@ -76,23 +77,11 @@ const Footer = () => {
             <h4 className="font-heading font-semibold text-lg mb-4 text-white hover:text-orange-400 transition cursor-pointer">
               Contact Us
             </h4>
-            <ul className="space-y-3">
-              <li className="group flex items-start gap-2 text-sm text-white/80 hover:text-orange-400 transition cursor-pointer">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0 group-hover:scale-110 transition" />
-                Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal
-              </li>
+            <ContactTopInfo />
 
-              <li className="group flex items-center gap-2 text-sm text-white/80 hover:text-orange-400 transition cursor-pointer">
-                <Phone className="h-4 w-4 shrink-0 group-hover:scale-110 transition" />
-                +9779851101782, 01-4531819
-              </li>
 
-              <li className="group flex items-center gap-2 text-sm text-white/80 hover:text-orange-400 transition cursor-pointer">
-                <Mail className="h-4 w-4 shrink-0 group-hover:scale-110 transition" />
-                admin@provisa.com.np
-              </li>
-            </ul>
           </div>
+
 
         </div>
       </div>

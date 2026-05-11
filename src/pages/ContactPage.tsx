@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { MapPin, Phone, Mail } from "lucide-react";
 import { inquiriesAPI } from '@/lib/api';
 import { Textarea } from "@/components/ui/textarea";
+import ContactTopInfo from "@/components/ContactTopInfo";
+
 
 const ContactPage = () => {
   const [form, setForm] = useState({
@@ -34,46 +35,8 @@ const ContactPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-            {[
-              { icon: MapPin, label: "Kathmandu Office", value: "Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal", href: "https://www.google.com/maps/search/?api=1&query=Laxmi%20Plaza%2C%20Putalisadak%2C%20Padmodaya%20Mode%2C%20Kathmandu%2C%20Nepal" },
-              { icon: Phone, label: "Phone", value: "+9779851101782", href: "tel:+9779851101782" },
-              { icon: Mail, label: "Email", value: "admin@provisa.com.np", href: "mailto:admin@provisa.com.np" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-start gap-3">
-                {item.href ? (
-                  <a
-                    href={item.href}
-                    target={item.href.startsWith("http") ? "_blank" : undefined}
-                    rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-                    className="group"
-                    aria-label={item.label}
-                  >
-                    <item.icon className="h-5 w-5 text-primary mt-1 shrink-0 group-hover:scale-110 transition-transform" />
-                  </a>
-                ) : (
-                  <item.icon className="h-5 w-5 text-primary mt-1 shrink-0" />
-                )}
+          <ContactTopInfo />
 
-                <div>
-                  <h3 className="font-heading font-semibold text-foreground">{item.label}</h3>
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      target={item.href.startsWith("http") ? "_blank" : undefined}
-                      rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-                      className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
-                    >
-                      {item.value}
-                    </a>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">{item.value}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-
-          </div>
 
           <div className="bg-muted rounded-2xl p-8 md:p-12">
             <p className="section-subtitle mb-2">Send us your doubts</p>

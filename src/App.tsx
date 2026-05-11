@@ -28,7 +28,11 @@ import StudyInAustraliaPage from "./pages/StudyInAustraliaPage";
 import StudyInUKPage from "./pages/StudyInUKPage";
 import StudyInJapanPage from "./pages/StudyInJapanPage";
 import StudyInCanadaPage from "./pages/StudyInCanadaPage";
+import StudyInIndiaPage from "./pages/StudyInIndiaPage";
+import StudyInChinaPage from "./pages/StudyInChinaPage";
+import StudyInSouthKoreaPage from "./pages/StudyInSouthKoreaPage";
 import TestPrepPage from "./pages/TestPrepPage";
+
 import ServicesPage from "./pages/ServicesPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import BlogDetail from "./pages/BlogDetail";
@@ -61,7 +65,11 @@ const App = () => (
             <Route path="/study-abroad/uk" element={<StudyInUKPage />} />
             <Route path="/study-abroad/canada" element={<StudyInCanadaPage />} />
             <Route path="/study-abroad/japan" element={<StudyInJapanPage />} />
+            <Route path="/study-abroad/india" element={<StudyInIndiaPage />} />
+            <Route path="/study-abroad/china" element={<StudyInChinaPage />} />
+            <Route path="/study-abroad/south-korea" element={<StudyInSouthKoreaPage />} />
             <Route path="/study-abroad/europe" element={<StudyAbroadCountryPage />} />
+
             <Route path="/study-abroad" element={<StudyAbroadPage />} />
             <Route path="/test-prep/:test" element={<TestPrepPage />} />
             <Route path="/services/:service" element={<ServicesPage />} />

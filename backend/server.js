@@ -85,6 +85,10 @@ app.use('/api/admin/testimonials', require('./routes/admin/testimonials'));
 app.use('/api/admin/universities', require('./routes/admin/universities'));
 app.use('/api/admin/services', require('./routes/admin/services'));
 app.use('/api/admin/inquiries', require('./routes/admin/inquiries'));
+app.use('/api/admin/settings', require('./routes/admin/settings'));
+
+// Public frontend settings (footer/contact)
+app.use('/settings', require('./routes/settings'));
 
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/blogs', require('./routes/blogs'));
