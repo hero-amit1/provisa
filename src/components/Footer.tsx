@@ -17,8 +17,7 @@ const Footer = () => {
               className="h-16 mb-4 bg-background rounded-lg p-2 hover:scale-105 transition duration-300"
             />
             <p className="text-sm text-white/80 leading-relaxed hover:text-orange-400 transition-colors duration-300 cursor-pointer">
-              Don't just take our word for it, come see us and let us show you
-              that you've come to the right place.
+             "Think Globally, Learn Globally, Grow Globally"
             </p>
           </div>
 

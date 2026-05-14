@@ -40,6 +40,10 @@ const StudyAbroadCountryPage = () => {
   const data = countryData[key];
 
   const isUSA = key === "usa";
+  const hasFullContent = (countryData as any)[key]?.hasFullContent;
+
+
+
   const heroByKey: Partial<Record<CountryKey, string>> = {
     usa: usaImg,
     uk: ukImg,

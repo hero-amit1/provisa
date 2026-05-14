@@ -7,6 +7,16 @@ const resourceData = {
   "biodata": { name: "Student Biodata Template", desc: "Professional biodata format for applications.", icon: FileText },
   "sop": { name: "Statement of Purpose Guide", desc: "How to write winning SOP for study abroad.", icon: GraduationCap },
   "course-selection": { name: "Course Selection Guide", desc: "How to choose the right course and university.", icon: BookOpen },
+  "letter-of-recommendation": {
+    name: "Letter of Recommendation Guide",
+    desc: "Understand what makes a strong recommendation letter and how to request one.",
+    icon: FileText,
+  },
+  "motivation-letter": {
+    name: "Motivation Letter Guide",
+    desc: "Learn how to write a compelling motivation letter for your study abroad application.",
+    icon: GraduationCap,
+  },
 };
 
 const ResourcesPage = () => {
@@ -36,12 +46,12 @@ const ResourcesPage = () => {
           <div className="bg-card rounded-3xl border shadow-2xl p-12 mb-16">
             <div className="prose prose-lg max-w-none text-muted-foreground leading-relaxed">
               <p className="text-foreground font-semibold text-xl mb-8">Download your free guide:</p>
-              
+
               <div className="bg-gradient-to-r from-green-500/5 to-blue-500/5 border border-dashed border-green-200 p-8 rounded-2xl text-center mb-12">
                 <Download className="h-16 w-16 mx-auto mb-6 text-green-500" />
                 <h3 className="text-2xl font-bold mb-4">Ready to Download</h3>
                 <p className="text-lg text-muted-foreground mb-8">Click below to get your personalized guide</p>
-                <Link 
+                <Link
                   to="/appointment"
                   className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
                 >
@@ -91,7 +101,7 @@ const ResourcesPage = () => {
 
           {/* CTA */}
           <div className="text-center">
-            <Link 
+            <Link
               to="/appointment"
               className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-10 py-5 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]"
             >

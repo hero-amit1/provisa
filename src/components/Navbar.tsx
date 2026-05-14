@@ -44,6 +44,8 @@ const resourcesLinks = [
   { label: "Biodata", path: "/resources/biodata" },
   { label: "Statement of Purpose", path: "/resources/sop" },
   { label: "Course Selection", path: "/resources/course-selection" },
+  { label: "Letter of Recommendation", path: "/resources/letter-of-recommendation" },
+  { label: "Motivation Letter", path: "/resources/motivation-letter" },
 ];
 
 const navItems = [

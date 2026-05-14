@@ -6,7 +6,12 @@ const getApiBase = () => {
     return import.meta.env.VITE_API_BASE_URL;
   }
   // In production (non-development), try to construct from current origin
-  if (import.meta.env.PROD === 'true' || !import.meta.env.DEV) {
+  const prod = import.meta.env.PROD as unknown;
+  const dev = import.meta.env.DEV as unknown;
+
+  if (prod === 'true' || dev === undefined) {
+
+
     // If VITE_API_BASE_URL is NOT set, fall back to same-origin (will work only when frontend & backend share host)
     return '/api';
   }
@@ -41,14 +46,33 @@ const apiFetch = async (endpoint: string, options: ApiRequestOptions = {}) => {
   const text = await response.text();
 
   if (!response.ok) {
-    let error;
+    let parsed: unknown = null;
     try {
-      error = JSON.parse(text);
+      parsed = JSON.parse(text);
     } catch {
-      error = { error: text || 'API error' };
+      // ignore
     }
-    throw new Error(error.error || 'API error');
+
+    const backendMessage =
+      parsed && typeof parsed === 'object' && parsed !== null
+        ? (parsed as { message?: unknown }).message
+        : undefined;
+
+
+
+    const finalMessage =
+      typeof backendMessage === 'string'
+        ? backendMessage
+        : text
+          ? text
+          : 'API error';
+
+
+    throw new Error(finalMessage);
   }
+
+
+
 
   if (!text) return null;
 
@@ -120,7 +144,19 @@ export const universitiesAPI = {
 
 // SETTINGS
 export const settingsAPI = {
-  getPublic: () => apiFetch('/settings'),
+  // Public endpoint is mounted on the backend as GET /settings (NOT /api/settings)
+  getPublic: () => {
+    const url = `${window.location.origin}/settings`;
+    return fetch(url)
+      .then(async (r) => {
+        const text = await r.text();
+        if (!r.ok) throw new Error(text || 'API error');
+        return text ? JSON.parse(text) : null;
+      })
+      .catch((e) => {
+        throw e instanceof Error ? e : new Error('API error');
+      });
+  },
   getAdmin: () => apiFetch('/admin/settings'),
   updateAdmin: (data: Record<string, unknown>) =>
     apiFetch('/admin/settings', {
@@ -128,6 +164,7 @@ export const settingsAPI = {
       body: JSON.stringify(data),
     }),
 };
+
 
 // INQUIRIES
 export const inquiriesAPI = {

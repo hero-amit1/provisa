@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { Music2, Phone } from "lucide-react";
+import { Phone, Music2 } from "lucide-react";
+
+
 
 
 // You can replace these with your real profile links
 const SOCIAL = {
-    instagram: "https://www.instagram.com/",
+    instagram: "https://www.instagram.com/provisanepal?igsh=MTRpdjI0NWJzcmw1Yg==",
     whatsapp: "https://wa.me/+9779851101782",
-    tiktok: "https://www.tiktok.com/",
-    facebook: "https://www.facebook.com/",
+    tiktok: "https://www.tiktok.com/@provisanepal?_r=1&_t=ZS-96EZl63VYNl",
+    facebook: "https://www.facebook.com/provisa.com.np",
 } as const;
 
 type SocialKey = keyof typeof SOCIAL;
@@ -24,6 +26,9 @@ const getIcon = (_key: SocialKey) => {
             return Music2;
         case "facebook":
             return Phone;
+        default:
+            // Safety fallback (should be unreachable)
+            return Music2;
     }
 };
 

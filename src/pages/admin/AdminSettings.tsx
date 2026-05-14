@@ -26,15 +26,29 @@ const AdminSettings = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const loadSettings = async () => {
+    try {
+      const data = await settingsAPI.getAdmin();
+      setForm(data as Settings);
+    } catch {
+      setForm({ companyName: "", email: "", phone: "", address: "" });
+    }
+  };
+
   const handleSave = async () => {
     try {
       await settingsAPI.updateAdmin(form);
       alert("Settings saved successfully.");
+      await loadSettings();
     } catch (e) {
       console.error(e);
-      alert("Error saving settings.");
+      const message = e instanceof Error ? e.message : undefined;
+      alert(message || "Error saving settings.");
     }
+
   };
+
+
 
   return (
     <AdminLayout>
