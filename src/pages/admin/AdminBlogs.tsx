@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
-import { blogsAPI } from '@/lib/api';
+import { resolveImageUrl, blogsAPI } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -247,7 +247,7 @@ const AdminBlogs = () => {
                 <tr key={blog._id} className="border-b hover:bg-muted/50">
                   <td className="p-4">
                     {blog.image ? (
-                      <img src={blog.image} alt="" className="w-12 h-12 object-cover rounded" />
+                      <img src={resolveImageUrl(blog.image)} alt="" className="w-12 h-12 object-cover rounded" />
                     ) : (
                       <div className="w-12 h-12 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">
                         No img

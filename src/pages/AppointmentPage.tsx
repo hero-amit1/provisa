@@ -63,16 +63,34 @@ const AppointmentPage = () => {
             <Input label="Phone Number" value={form.phone} onChange={(v) => handleChange("phone", v)} />
             <Input label="Address" value={form.address} onChange={(v) => handleChange("address", v)} />
 
-            <Select label="Education Level" onChange={(v) => handleChange("education", v)} />
-            <Select label="Select Subject" onChange={(v) => handleChange("subject", v)} />
+            <Select
+              label="Education Level"
+              options={["SLC", "Intermediate", "Bachelor", "Master", "PHD"]}
+              onChange={(v) => handleChange("education", v)}
+            />
+            <Select
+              label="Select Subject"
+              options={["Science", "Management", "Humanities", "Engineering", "Medical"]}
+              onChange={(v) => handleChange("subject", v)}
+            />
+
 
             <Input type="date" label="Passed Year" value={form.year} onChange={(v) => handleChange("year", v)} />
             <Input label="GPA / Percentage" value={form.gpa} onChange={(v) => handleChange("gpa", v)} />
 
-            <Select label="Destination Country" onChange={(v) => handleChange("country", v)} />
-            <Select label="Test Preparation" onChange={(v) => handleChange("test", v)} />
+            <Select
+              label="Destination Country"
+              options={["australia", "canada", "china", "europe", "india", "japan", "south korea", "uk", "usa"]}
+              onChange={(v) => handleChange("country", v)}
+            />
+            <Select label="Test Preparation" options={["IELTS", "TOEFL", "SAT", "PTE", "Japanese Language"]} onChange={(v) => handleChange("test", v)} />
 
-            <Select label="Course" onChange={(v) => handleChange("course", v)} />
+            <Select
+              label="Course"
+              options={["diploma", "bachelor", "master", "phd", "post graduate diploma", "certificate", "vocational", "others"]}
+              onChange={(v) => handleChange("course", v)}
+            />
+
 
             {/* Radio */}
             <div>
@@ -150,10 +168,11 @@ const Input = ({ label, value, onChange, type = "text" }: InputProps) => (
 // 🔹 Reusable Select Component
 interface SelectProps {
   label: string;
+  options: string[];
   onChange: (value: string) => void;
 }
 
-const Select = ({ label, onChange }: SelectProps) => (
+const Select = ({ label, options, onChange }: SelectProps) => (
   <div>
     <label className="block text-sm mb-1 font-medium">{label}</label>
     <select
@@ -161,11 +180,12 @@ const Select = ({ label, onChange }: SelectProps) => (
       className="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-orange-500 outline-none"
     >
       <option>--- Select ---</option>
-      <option>IELTS</option>
-      <option>TOEFL</option>
-      <option>SAT</option>
-      <option>PTE</option>
-      <option>Japanese Language</option>
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt}
+        </option>
+      ))}
     </select>
   </div>
 );
+

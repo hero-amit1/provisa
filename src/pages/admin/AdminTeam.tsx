@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Plus, Pencil, Trash2, Loader2, Users } from "lucide-react";
-import { teamAPI } from '@/lib/api';
+import { resolveImageUrl, teamAPI } from '@/lib/api';
+
 import { Button } from "@/components/ui/button";
 
 interface TeamMember {
@@ -54,7 +55,7 @@ const AdminTeam = () => {
       setShowForm(false);
       setEditing(null);
       setForm({ name: "", role: "", image: null as File | null, bio: "" });
-    } catch (err) {
+    } catch {
       alert('Save failed');
     } finally {
       setSaving(false);
@@ -66,7 +67,7 @@ const AdminTeam = () => {
     try {
       await teamAPI.delete(id);
       loadTeam();
-    } catch (err) {
+    } catch {
       alert('Delete failed');
     }
   };
@@ -132,7 +133,7 @@ const AdminTeam = () => {
               <tr key={m._id} className="border-b border-border last:border-0 hover:bg-muted">
                 <td className="p-4">
                   {m.image ? (
-                    <img src={m.image} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
+                    <img src={resolveImageUrl(m.image)} alt={m.name} className="w-12 h-12 rounded-full object-cover" />
                   ) : (
                     <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                       <Users className="h-6 w-6 text-muted-foreground" />

@@ -22,7 +22,7 @@ const ContactTopInfo = () => {
   }, []);
 
   const address = settings?.address?.trim() || 'Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal';
-  const phone = settings?.phone?.trim() || '+9779851101782';
+  const phone = settings?.phone?.trim() || '+9779851101782 , 01-4531819';
   const email = settings?.email?.trim() || 'admin@provisa.com.np';
 
   return (

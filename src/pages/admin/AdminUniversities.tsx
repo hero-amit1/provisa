@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { universitiesAPI } from '@/lib/api';
+import { resolveImageUrl, universitiesAPI } from '@/lib/api';
 
 interface University {
   _id: string;
@@ -174,7 +174,7 @@ const AdminUniversities = () => {
                 <td className="p-4">
                   {university.image ? (
                     <img
-                      src={university.image}
+                      src={resolveImageUrl(university.image)}
                       alt={university.name}
                       className="h-10 w-10 object-cover rounded"
                     />

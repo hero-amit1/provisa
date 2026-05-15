@@ -1,22 +1,22 @@
 // Production API base - in production, we need the explicit backend URL
 // For Render: the backend is typically at the same host or a separate render service
 const getApiBase = () => {
-  // If explicitly set, use it
+  // If explicitly set, use it (typically needed for production)
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
-  // In production (non-development), try to construct from current origin
+
   const prod = import.meta.env.PROD as unknown;
   const dev = import.meta.env.DEV as unknown;
 
-  if (prod === 'true' || dev === undefined) {
-
-
-    // If VITE_API_BASE_URL is NOT set, fall back to same-origin (will work only when frontend & backend share host)
+  // In development, rely on Vite's dev-server proxy so requests hit the same origin
+  // (avoids CORS issues in the browser).
+  if (prod !== 'true' && dev !== undefined) {
     return '/api';
   }
-  // Development: use proxy or local
-  return '/api';
+
+  // Fallback for non-dev without an explicit backend URL.
+  return 'http://localhost:4000/api';
 };
 
 const API_BASE = getApiBase();
@@ -48,27 +48,27 @@ const apiFetch = async (endpoint: string, options: ApiRequestOptions = {}) => {
   if (!response.ok) {
     let parsed: unknown = null;
     try {
-      parsed = JSON.parse(text);
+      parsed = text ? JSON.parse(text) : null;
     } catch {
-      // ignore
+      parsed = null;
     }
 
-    const backendMessage =
+    const messageFromJson =
       parsed && typeof parsed === 'object' && parsed !== null
         ? (parsed as { message?: unknown }).message
         : undefined;
 
-
-
     const finalMessage =
-      typeof backendMessage === 'string'
-        ? backendMessage
+      typeof messageFromJson === 'string'
+        ? messageFromJson
         : text
           ? text
           : 'API error';
 
+    const status = response.status;
 
-    throw new Error(finalMessage);
+    // Preserve useful info in the thrown error.
+    throw new Error(`${status} ${finalMessage}`);
   }
 
 
