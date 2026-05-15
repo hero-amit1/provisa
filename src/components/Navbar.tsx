@@ -46,6 +46,7 @@ const resourcesLinks = [
   { label: "Course Selection", path: "/resources/course-selection" },
   { label: "Letter of Recommendation", path: "/resources/letter-of-recommendation" },
   { label: "Motivation Letter", path: "/resources/motivation-letter" },
+  { label: "Medium of Instruction", path: "/resources/medium-of-instruction" },
 ];
 
 const navItems = [

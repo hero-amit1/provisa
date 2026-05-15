@@ -11,7 +11,9 @@ import FAQPage from "./pages/FAQPage";
 import UniversitiesPage from "./pages/UniversitiesPage";
 import BlogsPage from "./pages/BlogsPage";
 import StudyAbroadPage from "./pages/StudyAbroadPage";
-import StudyAbroadCountryPage from "./pages/StudyAbroadCountryPage";
+import StudyInEuropePage from "./pages/StudyInEuropePage";
+
+
 import AppointmentPage from "./pages/AppointmentPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -68,7 +70,7 @@ const App = () => (
             <Route path="/study-abroad/india" element={<StudyInIndiaPage />} />
             <Route path="/study-abroad/china" element={<StudyInChinaPage />} />
             <Route path="/study-abroad/south-korea" element={<StudyInSouthKoreaPage />} />
-            <Route path="/study-abroad/europe" element={<StudyAbroadCountryPage />} />
+            <Route path="/study-abroad/europe" element={<StudyInEuropePage />} />
 
             <Route path="/study-abroad" element={<StudyAbroadPage />} />
             <Route path="/test-prep/:test" element={<TestPrepPage />} />

@@ -31,7 +31,7 @@ const BlogsPage = () => {
           : res?.data || [];
 
         setBlogs(blogData);
-      } catch (err) {
+      } catch { 
         setError('Failed to load blogs');
       } finally {
         setLoading(false);

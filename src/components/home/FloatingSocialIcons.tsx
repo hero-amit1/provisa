@@ -1,40 +1,34 @@
 import { useEffect, useState } from "react";
-import { Phone, Music2 } from "lucide-react";
-
-
-
+import { FaFacebookF, FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa";
 
 // You can replace these with your real profile links
 const SOCIAL = {
-    instagram: "https://www.instagram.com/provisanepal?igsh=MTRpdjI0NWJzcmw1Yg==",
-    whatsapp: "https://wa.me/+9779851101782",
-    tiktok: "https://www.tiktok.com/@provisanepal?_r=1&_t=ZS-96EZl63VYNl",
-    facebook: "https://www.facebook.com/provisa.com.np",
+  instagram: "https://www.instagram.com/provisanepal?igsh=MTRpdjI0NWJzcmw1Yg==",
+  whatsapp: "https://wa.me/+9779851101782",
+  tiktok: "https://www.tiktok.com/@provisanepal?_r=1&_t=ZS-96EZl63VYNl",
+  facebook: "https://www.facebook.com/provisa.com.np",
 } as const;
 
 type SocialKey = keyof typeof SOCIAL;
 
 const getIcon = (_key: SocialKey) => {
-    // Using available lucide icons as visual placeholders
-    // (this repo's lucide-react version does not export brand icons).
-    switch (_key) {
-        case "instagram":
-            return Music2;
-        case "whatsapp":
-            return Phone;
-        case "tiktok":
-            return Music2;
-        case "facebook":
-            return Phone;
-        default:
-            // Safety fallback (should be unreachable)
-            return Music2;
-    }
+  switch (_key) {
+    case "instagram":
+      return FaInstagram;
+    case "whatsapp":
+      return FaWhatsapp;
+    case "tiktok":
+      return FaTiktok;
+    case "facebook":
+      return FaFacebookF;
+    default:
+      return FaInstagram;
+  }
 };
 
 const FloatingSocialIcons = () => {
-    const [open, setOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const onResize = () => setIsMobile(window.innerWidth < 768);

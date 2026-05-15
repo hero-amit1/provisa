@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import europeImg from "@/assets/europe.jpg";
+import ukImg from "@/assets/uk.jpg";
 import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Globe } from "lucide-react";
+
 
 const StudyInUKPage = () => {
     return (
         <Layout>
             <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
                 <img
-                    src={europeImg}
+                    src={ukImg}
                     alt="Study in UK"
                     className="w-full h-full object-cover"
                 />

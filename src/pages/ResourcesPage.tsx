@@ -2,6 +2,27 @@ import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Download, FileText, BookOpen, GraduationCap } from "lucide-react";
 
+
+
+
+
+
+
+
+import resume1Pdf from "@/assets/Resume 1.pdf";
+import resume2Pdf from "@/assets/Resume 2.pdf";
+import lor1Pdf from "@/assets/LOR 1.pdf";
+import lor2Pdf from "@/assets/LOR 2.pdf";
+import medium1Pdf from "@/assets/Medium of Instruction.pdf";
+import medium2Pdf from "@/assets/Medium of Instruction 2.pdf";
+import motivationLetterPdf from "@/assets/Motivation Letter.pdf";
+import australiaSop1Pdf from "@/assets/Australia SOP 1.pdf";
+import australiaSop2Pdf from "@/assets/Australia SOP 2.pdf";
+
+
+
+
+
 const resourceData = {
   "interview-prep": { name: "Interview Preparation Guide", desc: "Complete guide for university admission interviews.", icon: BookOpen },
   "biodata": { name: "Student Biodata Template", desc: "Professional biodata format for applications.", icon: FileText },
@@ -17,6 +38,11 @@ const resourceData = {
     desc: "Learn how to write a compelling motivation letter for your study abroad application.",
     icon: GraduationCap,
   },
+  "medium-of-instruction": {
+    name: "Medium of Instruction Guide",
+    desc: "Understand what Medium of Instruction is and how to request the correct documents.",
+    icon: BookOpen,
+  },
 };
 
 const ResourcesPage = () => {
@@ -25,9 +51,13 @@ const ResourcesPage = () => {
 
   const Icon = data?.icon || FileText;
 
+  // selectedPdfUrl removed: was unused and caused eslint errors.
+
+
   return (
     <Layout>
       <section className="min-h-screen py-20 bg-gradient-to-b from-muted/30 to-background">
+
         <div className="section-container max-w-4xl">
           {/* Hero */}
           <div className="text-center mb-20">
@@ -51,13 +81,303 @@ const ResourcesPage = () => {
                 <Download className="h-16 w-16 mx-auto mb-6 text-green-500" />
                 <h3 className="text-2xl font-bold mb-4">Ready to Download</h3>
                 <p className="text-lg text-muted-foreground mb-8">Click below to get your personalized guide</p>
-                <Link
-                  to="/appointment"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
-                >
-                  Get Your Guide
-                  <span className="group-hover:translate-x-1 transition-all">→</span>
-                </Link>
+
+                {resource === "biodata" ? (
+
+
+
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view the resume templates below</div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={resume1Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Resume 1
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={resume1Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Resume 1
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <a
+                          href={resume2Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Resume 2
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={resume2Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Resume 2
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : resource === "motivation-letter" ? (
+
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view the Motivation Letter template below</div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={motivationLetterPdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Motivation Letter
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={motivationLetterPdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Motivation Letter
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : resource === "medium-of-instruction" ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view Medium of Instruction guides below</div>
+
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={medium1Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Medium of Instruction 1
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={medium1Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Medium of Instruction 1
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+
+                      <div className="flex-1">
+                        <a
+                          href={medium2Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Medium of Instruction 2
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={medium2Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Medium of Instruction 2
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                ) : resource === "letter-of-recommendation" ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view the LOR templates below</div>
+
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={resume1Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Resume 1
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={resume1Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Resume 1
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <a
+                          href={resume2Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Resume 2
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={resume2Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Resume 2
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : resource === "letter-of-recommendation" ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view the LOR templates below</div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={lor1Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download LOR 1
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={lor1Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View LOR 1
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <a
+                          href={lor2Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download LOR 2
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={lor2Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View LOR 2
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : resource === "sop" ? (
+                  <div className="flex flex-col gap-4">
+                    <div className="text-muted-foreground text-lg mb-2">Download or view Australia SOP templates below</div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <div className="flex-1">
+                        <a
+                          href={australiaSop1Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Australia SOP 1
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={australiaSop1Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Australia SOP 1
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <a
+                          href={australiaSop2Pdf}
+                          download
+                          className="inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                        >
+                          Download Australia SOP 2
+                          <span className="group-hover:translate-x-1 transition-all">→</span>
+                        </a>
+                        <div className="mt-3">
+                          <a
+                            href={australiaSop2Pdf}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex w-full items-center justify-center gap-3 bg-muted text-foreground px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                          >
+                            View Australia SOP 2
+                            <span className="group-hover:translate-x-1 transition-all">→</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    to="/appointment"
+
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl transition-all group"
+                  >
+                    Get Your Guide
+                    <span className="group-hover:translate-x-1 transition-all">→</span>
+                  </Link>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-8">

@@ -21,28 +21,28 @@ const ContactTopInfo = () => {
       .catch(() => setSettings(null));
   }, []);
 
-  const address = settings?.address || 'Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal';
-  const phone = settings?.phone || '+9779851101782';
-  const email = settings?.email || 'admin@provisa.com.np';
+  const address = settings?.address?.trim() || 'Laxmi Plaza, Putalisadak, Padmodaya Mode, Kathmandu, Nepal';
+  const phone = settings?.phone?.trim() || '+9779851101782';
+  const email = settings?.email?.trim() || 'admin@provisa.com.np';
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {[
         {
           icon: MapPin,
-          label: 'Kathmandu Office',
+          label: "Kathmandu Office",
           value: address,
           href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`,
         },
         {
           icon: Phone,
-          label: 'Phone',
+          label: "Phone",
           value: phone,
-          href: `tel:${phone.replace(/\s+/g, '')}`,
+          href: `tel:${phone.replace(/\s+/g, "")}`,
         },
         {
           icon: Mail,
-          label: 'Email',
+          label: "Email",
           value: email,
           href: `mailto:${email}`,
         },
@@ -50,20 +50,21 @@ const ContactTopInfo = () => {
         <div key={item.label} className="flex items-start gap-3">
           <a
             href={item.href}
-            target={item.href.startsWith('http') ? '_blank' : undefined}
-            rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+            target={item.href.startsWith("http") ? "_blank" : undefined}
+            rel={item.href.startsWith("http") ? "noreferrer" : undefined}
+            tabIndex={0}
             className="group"
             aria-label={item.label}
           >
-            <item.icon className="h-5 w-5 text-primary mt-1 shrink-0 group-hover:scale-110 transition-transform" />
+            <item.icon className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true" />
           </a>
 
-          <div>
+          <div className="leading-tight">
             <h3 className="font-heading font-semibold text-foreground">{item.label}</h3>
             <a
               href={item.href}
-              target={item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+              target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noreferrer" : undefined}
               className="text-sm text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
             >
               {item.value}

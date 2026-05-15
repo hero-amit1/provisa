@@ -37,8 +37,8 @@ const ContactPage = () => {
 
           <ContactTopInfo />
 
-
           <div className="bg-muted rounded-2xl p-8 md:p-12">
+
             <p className="section-subtitle mb-2">Send us your doubts</p>
             <h2 className="section-title mb-4">Do you have any questions?</h2>
             <p className="text-muted-foreground mb-8 max-w-2xl">
@@ -47,6 +47,30 @@ const ContactPage = () => {
             </p>
 
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <div className="rounded-2xl border border-border bg-background p-4 md:p-6">
+                  <p className="section-subtitle mb-1">Visit us</p>
+                  <h2 className="section-title mb-3 text-2xl">Kathmandu Office</h2>
+                  <div className="rounded-xl overflow-hidden border border-border">
+                    <iframe
+                      title="Google Map - Kathmandu Office"
+                      className="w-full h-64"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      src="https://www.google.com/maps?q=Laxmi%20Plaza%2C%20Putalisadak%2C%20Padmodaya%20Mode%2C%20Kathmandu%2C%20Nepal&output=embed"
+                      allowFullScreen
+                    />
+                  </div>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Laxmi%20Plaza%2C%20Putalisadak%2C%20Padmodaya%20Mode%2C%20Kathmandu%2C%20Nepal"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block mt-4 text-sm text-primary hover:underline"
+                  >
+                    Open in Google Maps
+                  </a>
+                </div>
+              </div>
               {[
                 { key: "name", label: "Full Name", placeholder: "Kumar Shrestha" },
                 { key: "email", label: "Email Address", placeholder: "example@gmail.com", type: "email" },

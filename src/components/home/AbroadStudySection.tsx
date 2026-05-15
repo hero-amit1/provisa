@@ -3,11 +3,11 @@ import australiaImg from "@/assets/australia.jpg";
 import europeImg from "@/assets/europe.jpg";
 import usaImg from "@/assets/usa.jpg";
 import southkoreaImg from "@/assets/southkorea.jpg";
-import indiaImg from "@/assets/Md.jpg";
-import chinaImg from "@/assets/Md.jpg";
+import indiaImg from "@/assets/India.jpg";
+import chinaImg from "@/assets/china.jpg";
 import japanImg from "@/assets/japan.jpg";
 import canadaImg from "@/assets/canada.jpg";
-import ukImg from "@/assets/europe.jpg";
+import ukImg from "@/assets/uk.jpg";
 
 const countries = [
   {

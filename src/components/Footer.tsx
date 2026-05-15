@@ -17,7 +17,7 @@ const Footer = () => {
               className="h-16 mb-4 bg-background rounded-lg p-2 hover:scale-105 transition duration-300"
             />
             <p className="text-sm text-white/80 leading-relaxed hover:text-orange-400 transition-colors duration-300 cursor-pointer">
-             "Think Globally, Learn Globally, Grow Globally"
+              Think Globally, Learn Globally, Grow Globally
             </p>
           </div>
 
@@ -76,9 +76,10 @@ const Footer = () => {
             <h4 className="font-heading font-semibold text-lg mb-4 text-white hover:text-orange-400 transition cursor-pointer">
               Contact Us
             </h4>
-            <ContactTopInfo />
-
-
+            {/* ContactTopInfo has mb-16; remove bottom spacing inside footer */}
+            <div className="mb-0">
+              <ContactTopInfo />
+            </div>
           </div>
 
 

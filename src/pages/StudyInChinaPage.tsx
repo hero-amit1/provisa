@@ -1,13 +1,20 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import chinaImg from "@/assets/china.jpg";
 import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Globe } from "lucide-react";
+
 
 const StudyInChinaPage = () => {
     return (
         <Layout>
             <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-background to-muted/30" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+                <img
+                    src={chinaImg}
+                    alt="Study in China"
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16 text-white">
                     <div className="section-container">
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 drop-shadow-2xl">
