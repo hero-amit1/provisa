@@ -3,13 +3,47 @@ import Layout from "@/components/Layout";
 import { Users, Award, Calendar, GraduationCap, Shield, Plane } from "lucide-react";
 
 const serviceData = {
-  "study-pathway": { name: "Study Pathway Consultation", icon: GraduationCap, desc: "Personalized study pathway planning and university selection based on your profile and goals." },
-  "interview-prep": { name: "Interview Preparation", icon: Users, desc: "Mock interviews and coaching for university admissions with expert feedback." },
-  "career-counseling": { name: "Career Counseling", icon: Award, desc: "Career guidance and job market insights to align your studies with future goals." },
-  "finance-scholarship": { name: "Finance & Scholarship", icon: Plane, desc: "Scholarship search, financial planning, and funding options guidance." },
-  "visa-guidance": { name: "Visa Guidance", icon: Shield, desc: "Complete visa application assistance with high success rate." },
-  "pre-departure": { name: "Pre-departure Briefing", icon: Calendar, desc: "Orientation and pre-departure support for smooth transition abroad." },
-  "test-preparation": { name: "Test Preparation", icon: Users, desc: "IELTS, TOEFL, SAT, PTE, Japanese Language coaching with expert tutors." }
+  "study-in-nepal": {
+    name: "Study in Nepal Consultation",
+    icon: GraduationCap,
+    desc: "Personalized guidance for students planning to study in Nepal, including program selection, profile review, and application strategy.",
+  },
+  "study-pathway": {
+    name: "Study Pathway Consultation",
+    icon: GraduationCap,
+    desc: "Personalized study pathway planning and university selection based on your profile and goals.",
+  },
+
+  "interview-prep": {
+    name: "Interview Preparation",
+    icon: Users,
+    desc: "Mock interviews and coaching for university admissions with expert feedback.",
+  },
+  "career-counseling": {
+    name: "Career Counseling",
+    icon: Award,
+    desc: "Career guidance and job market insights to align your studies with future goals.",
+  },
+  "finance-scholarship": {
+    name: "Finance & Scholarship",
+    icon: Plane,
+    desc: "Scholarship search, financial planning, and funding options guidance.",
+  },
+  "visa-guidance": {
+    name: "Visa Guidance",
+    icon: Shield,
+    desc: "Complete visa application assistance with high success rate.",
+  },
+  "pre-departure": {
+    name: "Pre-departure Briefing",
+    icon: Calendar,
+    desc: "Orientation and pre-departure support for smooth transition abroad.",
+  },
+  "test-preparation": {
+    name: "Test Preparation",
+    icon: Users,
+    desc: "IELTS, TOEFL, SAT, PTE, Japanese Language coaching with expert tutors.",
+  },
 };
 
 const ServicesPage = () => {
@@ -84,7 +118,7 @@ const ServicesPage = () => {
 
           {/* CTA */}
           <div className="text-center pt-12 border-t border-border">
-            <Link 
+            <Link
               to="/appointment"
               className="group inline-flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 hover:from-primary hover:to-orange-600 text-white px-12 py-6 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1"
             >

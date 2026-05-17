@@ -56,7 +56,7 @@ const Footer = () => {
                 { label: "Universities", path: "/universities" },
                 { label: "Study Abroad", path: "/study-abroad/australia" },
                 { label: "Blogs", path: "/blogs" },
-                { label: "Services", path: "/services/study-pathway" },
+                { label: "Services", path: "/services/study-in-nepal" },
               ].map((link) => (
                 <li key={link.path}>
                   <Link

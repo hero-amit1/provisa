@@ -27,10 +27,10 @@ const ServicesSection = () => {
     <section className="section-padding data-scroll-reveal" data-animation="slide-up">
       <div className="section-container">
         <div className="text-center mb-12 data-scroll-reveal animate-slide-up">
-          <p className="section-subtitle mb-2 animate-fade-in animation-delay-100">Services</p>
-          <h2 className="section-title mb-4 animate-slide-up animation-delay-200">Our Services</h2>
+          <p className="section-subtitle mb-2 animate-fade-in animation-delay-100">Services in Nepal</p>
+          <h2 className="section-title mb-4 animate-slide-up animation-delay-200">Our Nepal Services</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto animate-fade-in-up animation-delay-300">
-            We provide the best services to our customers. We are always here to help you.
+            We provide guidance and support for students planning their education journey in Nepal. We are always here to help you.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 data-scroll-reveal">

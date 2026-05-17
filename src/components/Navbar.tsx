@@ -16,14 +16,14 @@ const abroadStudyLinks = [
   { label: "South Korea", path: "/study-abroad/south-korea" },
   { label: "UK", path: "/study-abroad/uk" },
   { label: "USA", path: "/study-abroad/usa" },
+  { label: "Nepal", path: "/study-abroad/nepal" },
 ];
 
 
 
 
 const serviceLinks = [
-
-  { label: "Study Pathway Consultation", path: "/services/study-pathway" },
+  { label: "Study in Nepal Consultation", path: "/services/study-in-nepal" },
   { label: "Interview Preparation", path: "/services/interview-prep" },
   { label: "Career Counseling", path: "/services/career-counseling" },
   { label: "Finance & Scholarship", path: "/services/finance-scholarship" },

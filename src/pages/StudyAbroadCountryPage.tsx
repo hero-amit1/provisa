@@ -42,6 +42,11 @@ const countryData = {
     flag: "🇨🇳",
     stats: { unis: "1,200+", intlStudents: "250K+", avgTuition: "¥60K" },
   },
+  nepal: {
+    name: "Nepal",
+    flag: "🇳🇵",
+    stats: { unis: "200+", intlStudents: "20K+", avgTuition: "$2K-$6K" },
+  },
 };
 
 type CountryKey = keyof typeof countryData;
@@ -52,7 +57,7 @@ const StudyAbroadCountryPage = () => {
   const data = countryData[key];
 
   const isUSA = key === "usa";
-const heroByKey: Partial<Record<string, string>> = {
+  const heroByKey: Partial<Record<string, string>> = {
     usa: usaImg,
     uk: ukImg,
     india: indiaImg,
