@@ -1,23 +1,29 @@
 /* eslint-disable */
 const express = require('express');
-const Inquiry = require('../models/Inquiry');
+// Inquiry model is intentionally not used anymore; we don't store submissions in admin/DB.
+// const Inquiry = require('../models/Inquiry');
 const { sendAppointmentEmail } = require('../utils/sendAppointmentEmail.cjs');
+const { sendContactEmail } = require('../utils/sendContactEmail.js');
 const router = express.Router();
 
 // Public POST new inquiry (from forms)
 router.post('/', async (req, res) => {
   try {
-    const newInquiry = new Inquiry(req.body);
-    const inquiry = await newInquiry.save();
+    // Do NOT store inquiries anymore. Send directly to EmailJS.
+    // const inquiry = null; // removed DB save path
 
-    // Send email only for appointments
-    if (req.body?.type === 'appointment') {
-      const { name, email, phone, country, date } = req.body;
 
-      // EmailJS template will use these variables.
-      const toEmail = email;
+    // Send emails:
+    // - appointment -> appointment email template
+    // - contact -> contact email template
+    if (req.body?.type === 'appointment' || req.body?.type === 'contact') {
+      const { name, email, phone, country, date, subject, message } = req.body;
 
-      // Non-blocking: don't fail the booking if email fails.
+      // EmailJS templates will use these variables.
+      // Send to marketing inbox (config-driven)
+      const toEmail = process.env.MARKETING_INBOX_EMAIL || 'marketing@provisa.com.np';
+
+
       const emailPayload = {
         toEmail,
         name,
@@ -25,25 +31,34 @@ router.post('/', async (req, res) => {
         phone,
         country,
         appointmentDate: date,
+        subject,
+        message,
       };
 
-      // store email debug for admin troubleshooting
-      Inquiry.findByIdAndUpdate(inquiry._id, {
-        $set: {
-          emailDebug: {
-            type: 'appointment',
-            success: undefined,
-            at: new Date(),
-            payload: emailPayload,
-          },
-        },
-      }).catch(() => { });
+      // No DB debug since we don't store inquiries anymore.
+      // console.log('[email-debug]', emailPayload);
 
-      sendAppointmentEmail(emailPayload)
+      const templateType = req.body?.type;
+
+      // Send to the correct EmailJS template
+      const emailPromise =
+        req.body?.type === 'contact'
+          ? sendContactEmail({
+            ...emailPayload,
+            subject,
+            message,
+          })
+          : sendAppointmentEmail({ ...emailPayload, templateType });
+
+      emailPromise
         .then((result) => {
           // sendAppointmentEmail returns { ok:true } on success, otherwise { ok:false, status, body, reason }
           if (!result?.ok) {
-            console.warn('[appointment-email] failed:', result);
+            console.warn(`[email] ${req.body?.type} failed:`, result);
+          } else {
+            console.log(`[email] ${req.body?.type} sent ok`);
+
+
 
             // Helpful log: print missing config reason
             if (result?.reason === 'missing-config') {
@@ -53,40 +68,18 @@ router.post('/', async (req, res) => {
             }
           }
 
-          Inquiry.findByIdAndUpdate(inquiry._id, {
-            $set: {
-              emailDebug: {
-                type: 'appointment',
-                success: !!result?.ok,
-                at: new Date(),
-                payload: emailPayload,
-                result: result?.ok ? { body: result.body } : result,
-              },
-            },
-          }).catch(() => { });
+          // No DB debug since we don't store inquiries anymore.
         })
         .catch((err) => {
           console.warn('[appointment-email] exception:', err?.message || err);
 
-          Inquiry.findByIdAndUpdate(inquiry._id, {
-            $set: {
-              emailDebug: {
-                type: 'appointment',
-                success: false,
-                at: new Date(),
-                payload: emailPayload,
-                error: {
-                  message: err?.message || String(err),
-                },
-              },
-            },
-          }).catch(() => { });
+          // No DB debug since we don't store inquiries anymore.
         });
     }
 
     res
       .status(201)
-      .json({ message: 'Inquiry submitted successfully', id: inquiry._id });
+      .json({ message: 'Inquiry submitted successfully' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

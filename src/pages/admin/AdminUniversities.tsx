@@ -1,10 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { resolveImageUrl, universitiesAPI } from '@/lib/api';
+import { useToast } from '@/components/ui/use-toast';
 
 interface University {
   _id: string;
@@ -13,89 +20,173 @@ interface University {
   image?: string;
 }
 
+const fallbackImg = "https://via.placeholder.com/80x80?text=Uni";
+
 const AdminUniversities = () => {
   const [items, setItems] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', country: '', image: null as File | null });
+
+  // dialogs
   const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [confirmEdit, setConfirmEdit] = useState<University | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const { toast } = useToast();
 
-  const loadData = async () => {
+  const [form, setForm] = useState({
+    name: '',
+    country: '',
+    image: null as File | null
+  });
+
+  // LOAD DATA
+  const loadData = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await universitiesAPI.getAll();
-      setItems(data);
-    } catch (error) {
-      console.error(error);
+      setItems(Array.isArray(data) ? data : data?.data || []);
+    } catch {
+      toast({
+        title: "⚠️ Error",
+        description: "Failed to load universities",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // SAVE
   const handleSave = async () => {
+    if (!form.name || !form.country) {
+      toast({
+        title: "Validation error",
+        description: "Name and country are required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+
     try {
       const formData = new FormData();
       formData.append('name', form.name);
       formData.append('country', form.country);
-      if (form.image) {
-        formData.append('image', form.image);
-      }
+      if (form.image) formData.append('image', form.image);
+
       if (editingId) {
         await universitiesAPI.update(editingId, formData);
+
+        toast({
+          title: "✨ Updated",
+          description: "University updated successfully",
+        });
       } else {
         await universitiesAPI.create(formData);
+
+        toast({
+          title: "🎉 Created",
+          description: "University added successfully",
+        });
       }
-      loadData();
+
       setOpen(false);
       setEditingId(null);
       setForm({ name: '', country: '', image: null });
-    } catch (error) {
-      console.error(error);
+
+      await loadData();
+
+    } catch {
+      toast({
+        title: "❌ Error",
+        description: "Operation failed. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
+  // EDIT (opens confirm modal)
   const handleEdit = (item: University) => {
-    setEditingId(item._id);
+    setConfirmEdit(item);
+  };
+
+  const confirmEditAction = () => {
+    if (!confirmEdit) return;
+
+    setEditingId(confirmEdit._id);
     setForm({
-      name: item.name,
-      country: item.country,
+      name: confirmEdit.name,
+      country: confirmEdit.country,
       image: null
     });
+
     setOpen(true);
+    setConfirmEdit(null);
+
+    toast({
+      title: "✏️ Editing mode",
+      description: `${confirmEdit.name} opened for editing`,
+    });
   };
 
-  const handleDelete = async (id: string) => {
+  // DELETE
+  const handleDelete = (id: string) => {
+    setConfirmDelete(id);
+  };
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDelete) return;
+
     try {
-      await universitiesAPI.delete(id);
-      loadData();
-    } catch (error) {
-      console.error(error);
+      await universitiesAPI.delete(confirmDelete);
+
+      toast({
+        title: "🗑️ Deleted",
+        description: "University removed successfully",
+      });
+
+      await loadData();
+
+    } catch {
+      toast({
+        title: "❌ Error",
+        description: "Failed to delete university",
+        variant: "destructive",
+      });
+    } finally {
+      setConfirmDelete(null);
     }
   };
-
-  if (loading) {
-    return <AdminLayout><div className="p-8 text-center">Loading...</div></AdminLayout>;
-  }
 
   return (
     <AdminLayout>
+      {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-heading font-semibold text-lg text-foreground">
-          Manage Universities
-        </h2>
+        <h2 className="font-semibold text-lg">Manage Universities</h2>
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button
+              onClick={() => {
+                setEditingId(null);
+                setForm({ name: '', country: '', image: null });
+              }}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add University
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent className="rounded-2xl">
             <DialogHeader>
               <DialogTitle>
                 {editingId ? 'Edit' : 'Add'} University
@@ -106,115 +197,126 @@ const AdminUniversities = () => {
               <Input
                 placeholder="University name"
                 value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
 
               <Input
                 placeholder="Country"
                 value={form.country}
-                onChange={(e) =>
-                  setForm({ ...form, country: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
               />
 
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-2">Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setForm({ ...form, image: e.target.files?.[0] || null })
-                  }
-                  className="w-full px-4 py-2.5 bg-background border border-border rounded-lg text-sm"
-                />
-                {form.image && (
-                  <img
-                    src={URL.createObjectURL(form.image)}
-                    alt="Preview"
-                    className="h-20 w-20 object-cover rounded mt-2"
-                  />
-                )}
-              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  setForm({ ...form, image: e.target.files?.[0] || null })
+                }
+                className="w-full border p-2 rounded"
+              />
 
-              <Button onClick={handleSave} className="w-full">
-                Save
+              <Button onClick={handleSave} disabled={saving} className="w-full">
+                {saving ? "Saving..." : "Save"}
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
+      {/* TABLE */}
       <div className="bg-background border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-border">
-              <th className="text-left p-4 font-medium text-muted-foreground">
-                Image
-              </th>
-              <th className="text-left p-4 font-medium text-muted-foreground">
-                University
-              </th>
-              <th className="text-left p-4 font-medium text-muted-foreground">
-                Country
-              </th>
-              <th className="text-right p-4 font-medium text-muted-foreground">
-                Actions
-              </th>
+            <tr className="border-b">
+              <th className="p-4 text-left">Image</th>
+              <th className="p-4 text-left">Name</th>
+              <th className="p-4 text-left">Country</th>
+              <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {items.map((university) => (
-              <tr
-                key={university._id}
-                className="border-b border-border hover:bg-muted/50"
-              >
-                <td className="p-4">
-                  {university.image ? (
+            {loading ? (
+              <tr>
+                <td colSpan={4} className="p-8 text-center animate-pulse">
+                  Loading universities...
+                </td>
+              </tr>
+            ) : (
+              items.map((u) => (
+                <tr key={u._id} className="border-b hover:bg-muted/40">
+
+                  <td className="p-4">
                     <img
-                      src={resolveImageUrl(university.image)}
-                      alt={university.name}
-                      className="h-10 w-10 object-cover rounded"
+                      src={resolveImageUrl(u.image || "") || fallbackImg}
+                      className="h-10 w-10 rounded object-cover"
                     />
-                  ) : (
-                    <div className="h-10 w-10 bg-muted rounded" />
-                  )}
-                </td>
+                  </td>
 
-                <td className="p-4 font-medium">
-                  {university.name}
-                </td>
+                  <td className="p-4 font-medium">{u.name}</td>
+                  <td className="p-4">{u.country}</td>
 
-                <td className="p-4">
-                  {university.country}
-                </td>
-
-                <td className="p-4">
-                  <div className="flex gap-2 justify-end">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEdit(university)}
-                    >
+                  <td className="p-4 text-right space-x-2">
+                    <Button size="sm" variant="outline" onClick={() => handleEdit(u)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
 
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(university._id)}
-                    >
+                    <Button size="sm" variant="destructive" onClick={() => handleDelete(u._id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* ✨ EDIT CONFIRM MODAL */}
+      <Dialog open={!!confirmEdit} onOpenChange={() => setConfirmEdit(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Edit</DialogTitle>
+          </DialogHeader>
+
+          <p className="text-sm text-muted-foreground">
+            Do you want to edit <b>{confirmEdit?.name}</b>?
+          </p>
+
+          <div className="flex gap-2 mt-4">
+            <Button variant="outline" onClick={() => setConfirmEdit(null)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmEditAction}>
+              Yes, Edit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ✨ DELETE CONFIRM MODAL */}
+      <Dialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+          </DialogHeader>
+
+          <p className="text-sm text-muted-foreground">
+            This action cannot be undone. Are you sure?
+          </p>
+
+          <div className="flex gap-2 mt-4">
+            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDeleteAction}>
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </AdminLayout>
   );
 };

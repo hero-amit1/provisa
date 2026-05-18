@@ -1,22 +1,19 @@
-import { useState, useEffect } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { DialogDescription } from '@/components/ui/dialog';
+import { useState, useEffect, useCallback } from "react";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Star } from 'lucide-react';
-import { testimonialsAPI } from '@/lib/api';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Plus, Pencil, Trash2, Star } from "lucide-react";
+import { testimonialsAPI } from "@/lib/api";
+import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Testimonial {
   _id: string;
@@ -26,35 +23,52 @@ interface Testimonial {
   rating: number;
 }
 
-const AdminTestimonials = () => {
+export default function AdminTestimonials() {
   const [items, setItems] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', university: '', text: '', rating: 5 });
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const [form, setForm] = useState<Testimonial>({
+    _id: "",
+    name: "",
+    university: "",
+    text: "",
+    rating: 5,
+  });
 
-  const loadData = async () => {
+  // ✅ FIXED: stable function (removes react-hooks/exhaustive-deps warning)
+  const load = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await testimonialsAPI.getAll();
-      setItems(data);
-    } catch (error) {
-      console.error(error);
-      setItems([]);
+      setItems(Array.isArray(data) ? data : data?.data || []);
+
+      toast({
+        title: "✨ Updated",
+        description: "Testimonials loaded successfully",
+      });
+    } catch {
+      toast({
+        title: "❌ Error",
+        description: "Failed to load testimonials",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const handleSave = async () => {
-    if (!form.name.trim() || !form.university.trim() || !form.text.trim()) {
+    if (!form.name || !form.university || !form.text) {
       toast({
-        title: "Validation Error",
+        title: "Validation error",
         description: "All fields are required",
         variant: "destructive",
       });
@@ -64,49 +78,74 @@ const AdminTestimonials = () => {
     try {
       if (editingId) {
         await testimonialsAPI.update(editingId, form);
+
+        toast({
+          title: "✨ Updated",
+          description: "Testimonial updated successfully",
+        });
       } else {
         await testimonialsAPI.create(form);
+
+        toast({
+          title: "🎉 Created",
+          description: "Testimonial added successfully",
+        });
       }
 
-      loadData();
       setOpen(false);
       setEditingId(null);
-      setForm({ name: '', university: '', text: '', rating: 5 });
+      setForm({
+        _id: "",
+        name: "",
+        university: "",
+        text: "",
+        rating: 5,
+      });
 
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Save failed';
-      setError(errorMsg);
-
+      await load();
+    } catch {
       toast({
-        title: "Save failed",
-        description: errorMsg,
+        title: "❌ Error",
+        description: "Operation failed. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const handleEdit = (item: Testimonial) => {
-    setEditingId(item._id);
-    setForm({ name: item.name, university: item.university, text: item.text, rating: item.rating || 5 });
+  const handleEdit = (t: Testimonial) => {
+    setEditingId(t._id);
+    setForm(t);
     setOpen(true);
+
+    toast({
+      title: "✏️ Editing mode",
+      description: `${t.name} opened for editing`,
+    });
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this testimonial?')) return;
+    const ok = window.confirm("Are you sure you want to delete this testimonial?");
+    if (!ok) {
+      toast({
+        title: "Cancelled",
+        description: "Delete action cancelled",
+      });
+      return;
+    }
 
     try {
       await testimonialsAPI.delete(id);
-      loadData();
 
       toast({
-        title: "Deleted",
+        title: "🗑️ Deleted",
         description: "Testimonial removed successfully",
       });
 
-    } catch (error) {
+      await load();
+    } catch {
       toast({
-        title: "Delete failed",
-        description: error instanceof Error ? error.message : 'Unknown error',
+        title: "❌ Error",
+        description: "Failed to delete testimonial",
         variant: "destructive",
       });
     }
@@ -115,73 +154,79 @@ const AdminTestimonials = () => {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="p-8 text-center">Loading testimonials...</div>
+        <div className="p-10 text-center animate-pulse text-muted-foreground">
+          Loading testimonials...
+        </div>
       </AdminLayout>
     );
   }
 
   return (
     <AdminLayout>
-
-      {error && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="font-heading font-semibold text-lg text-foreground">
-          Manage Testimonials
-        </h2>
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-xl font-bold">Testimonials</h2>
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Testimonial
+            <Button
+              onClick={() => {
+                setEditingId(null);
+                setForm({
+                  _id: "",
+                  name: "",
+                  university: "",
+                  text: "",
+                  rating: 5,
+                });
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent className="rounded-2xl">
             <DialogHeader>
               <DialogTitle>
-                {editingId ? 'Edit' : 'Add'} Testimonial
+                {editingId ? "Edit" : "Add"} Testimonial
               </DialogTitle>
-              <DialogDescription>
-                Add student testimonial details
-              </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Input
-                placeholder="Student name"
+                placeholder="Name"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, name: e.target.value })
+                }
               />
 
               <Input
                 placeholder="University"
                 value={form.university}
-                onChange={(e) => setForm({ ...form, university: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, university: e.target.value })
+                }
               />
 
               <Textarea
-                placeholder="Testimonial text"
+                placeholder="Message"
                 value={form.text}
-                onChange={(e) => setForm({ ...form, text: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, text: e.target.value })
+                }
               />
 
-              <Select value={form.rating.toString()} onValueChange={(v) => setForm({ ...form, rating: parseInt(v) })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5].map((r) => (
-                    <SelectItem key={r} value={r.toString()}> {r} Stars </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Input
+                type="number"
+                min={1}
+                max={5}
+                value={form.rating}
+                onChange={(e) =>
+                  setForm({ ...form, rating: Number(e.target.value) })
+                }
+              />
 
               <Button onClick={handleSave} className="w-full">
                 Save
@@ -192,86 +237,53 @@ const AdminTestimonials = () => {
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map((t, i) => (
+          <motion.div
+            key={t._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            whileHover={{ scale: 1.03 }}
+            className="relative p-6 rounded-2xl border bg-white shadow-sm hover:shadow-xl transition group"
+          >
+            {/* Actions */}
+            <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100">
+              <Button size="icon" variant="ghost" onClick={() => handleEdit(t)}>
+                <Pencil className="w-4 h-4" />
+              </Button>
 
-        {items.map((t) => {
-          const initials = t.name
-            .split(" ")
-            .map(n => n[0])
-            .join("")
-            .toUpperCase();
-
-          return (
-            <div
-              key={t._id}
-              className="group relative bg-gradient-to-br from-background to-muted/30 border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-            >
-
-              {/* HEADER */}
-              <div className="flex items-start justify-between mb-4">
-
-                <div className="flex items-center gap-3">
-
-                  {/* AVATAR */}
-                  <div className="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold text-sm">
-                    {initials}
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-foreground text-sm">
-                      {t.name}
-                    </h3>
-
-                    <span className="inline-block mt-1 text-[11px] px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                      {t.university}
-                    </span>
-
-                    <div className="flex items-center gap-1 ml-auto">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* ACTIONS */}
-                <div className="opacity-0 group-hover:opacity-100 transition flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(t)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(t._id)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* QUOTE */}
-              <div className="relative">
-                <span className="text-3xl text-primary/20 absolute -top-2 -left-1">“</span>
-
-                <p className="text-sm text-muted-foreground leading-relaxed pl-4 line-clamp-5">
-                  {t.text}
-                </p>
-
-                <span className="text-3xl text-primary/20 absolute -bottom-4 right-0">”</span>
-              </div>
-
+              <Button size="icon" variant="ghost" onClick={() => handleDelete(t._id)}>
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </Button>
             </div>
-          );
-        })}
 
+            {/* Content */}
+            <div className="mb-3">
+              <h3 className="font-semibold">{t.name}</h3>
+              <p className="text-xs text-muted-foreground">{t.university}</p>
+            </div>
+
+            {/* Stars */}
+            <div className="flex gap-1 mb-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${i < t.rating
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-300"
+                    }`}
+                />
+              ))}
+            </div>
+
+            {/* Text */}
+            <p className="text-sm text-muted-foreground line-clamp-4">
+              {t.text}
+            </p>
+          </motion.div>
+        ))}
       </div>
     </AdminLayout>
   );
-};
-
-export default AdminTestimonials;
+}

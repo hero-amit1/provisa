@@ -10,19 +10,19 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Brand */}
-          <div>
+          <div className="min-w-0 overflow-hidden">
             <img
               src={logo}
               alt="ProVisa"
               className="h-16 mb-4 bg-background rounded-lg p-2 hover:scale-105 transition duration-300"
             />
-            <p className="text-sm text-white/80 leading-relaxed hover:text-orange-400 transition-colors duration-300 cursor-pointer">
+            <p className="text-sm text-white/80 leading-relaxed hover:text-orange-400 transition-colors duration-300 cursor-pointer break-words">
               Think Globally, Learn Globally, Grow Globally
             </p>
           </div>
 
           {/* Company */}
-          <div>
+          <div className="min-w-0 overflow-hidden">
             <h4 className="font-heading font-semibold text-lg mb-4 text-white hover:text-orange-400 transition cursor-pointer">
               Company
             </h4>
@@ -36,10 +36,10 @@ const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="group flex items-center gap-1 text-sm text-white/80 hover:text-orange-400 transition-all duration-300"
+                    className="group flex items-center gap-1 text-sm text-white/80 hover:text-orange-400 transition-all duration-300 min-w-0"
                   >
-                    <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300" />
-                    {link.label}
+                    <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300 shrink-0" />
+                    <span className="break-words min-w-0">{link.label}</span>
                   </Link>
                 </li>
               ))}
@@ -47,7 +47,7 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="min-w-0 overflow-hidden">
             <h4 className="font-heading font-semibold text-lg mb-4 text-white hover:text-orange-400 transition cursor-pointer">
               Quick Links
             </h4>
@@ -61,27 +61,26 @@ const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="group flex items-center gap-1 text-sm text-white/80 hover:text-orange-400 transition-all duration-300"
+                    className="group flex items-center gap-1 text-sm text-white/80 hover:text-orange-400 transition-all duration-300 min-w-0"
                   >
-                    <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300" />
-                    {link.label}
+                    <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-300 shrink-0" />
+                    <span className="break-words min-w-0">{link.label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
+          {/* Contact (FULLY ISOLATED FIX) */}
+          <div className="min-w-0 overflow-hidden">
             <h4 className="font-heading font-semibold text-lg mb-4 text-white hover:text-orange-400 transition cursor-pointer">
               Contact Us
             </h4>
-            {/* ContactTopInfo has mb-16; remove bottom spacing inside footer */}
-            <div className="mb-0">
+
+            <div className="min-w-0 w-full overflow-hidden">
               <ContactTopInfo />
             </div>
           </div>
-
 
         </div>
       </div>

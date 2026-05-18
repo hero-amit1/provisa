@@ -29,7 +29,10 @@ export default defineConfig(({ mode }) => ({
 
   plugins: [
     react(),
-    mode === "development" && componentTagger(),
+    // NOTE: lovable-tagger injects embed/search scripts during development.
+    // Disable to prevent console noise like: "Reporting Header: invalid JSON value received".
+    // If you need it back, explicitly re-enable via env (e.g. VITE_ENABLE_TAGGER=true).
+    mode === "development" && process.env.VITE_ENABLE_TAGGER === 'true' && componentTagger(),
   ].filter(Boolean),
 
   resolve: {

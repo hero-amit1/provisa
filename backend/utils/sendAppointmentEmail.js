@@ -16,9 +16,18 @@ async function sendAppointmentEmail({
     phone,
     country,
     appointmentDate,
+    subject,
+    message,
+    templateType,
 }) {
+    // Force recipient to marketing inbox (config-driven)
+    toEmail = process.env.MARKETING_INBOX_EMAIL || toEmail || 'marketing@provisa.com.np';
+
     const serviceId = process.env.EMAILJS_SERVICE_ID;
-    const templateId = process.env.EMAILJS_TEMPLATE_ID;
+    // Default template (appointment)
+    let templateId = process.env.EMAILJS_TEMPLATE_ID || 'template_n95q56m';
+
+
     const publicKey = process.env.EMAILJS_PUBLIC_KEY;
 
     if (!serviceId || !templateId || !publicKey) {
@@ -31,6 +40,8 @@ async function sendAppointmentEmail({
 
     const params = {
         to_email: toEmail || email,
+        subject: subject || '',
+        message: message || '',
         name: name || '',
         email: email || '',
         phone: phone || '',

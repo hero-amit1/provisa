@@ -1,34 +1,52 @@
 const express = require('express');
 const Blog = require('../../models/Blog');
 const auth = require('../../middleware/auth');
-const multer = require('multer');
 const slugify = require('slugify');
-const path = require('path');
+const dotenv = require('dotenv');
+
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
+
+dotenv.config();
 
 const router = express.Router();
 
 
 // ==============================
-// MULTER CONFIG (IMAGE UPLOAD)
+// CLOUDINARY CONFIG
 // ==============================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/blogs');
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+
+// ==============================
+// MULTER CLOUDINARY STORAGE
+// ==============================
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'blogs',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1200, crop: 'limit' }],
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith('image')) {
-      return cb(new Error('Only images allowed'));
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error('Only jpg, png, webp allowed'));
     }
+
     cb(null, true);
-  }
+  },
 });
 
 
@@ -38,7 +56,11 @@ const upload = multer({
 router.get('/', auth, async (req, res) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 });
-    res.json({ success: true, data: blogs });
+
+    res.json({
+      success: true,
+      data: blogs,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -46,14 +68,19 @@ router.get('/', auth, async (req, res) => {
 
 
 // ==============================
-// GET BLOG BY ID
+// GET SINGLE BLOG
 // ==============================
 router.get('/:id', auth, async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
+
     if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Blog not found',
+      });
     }
+
     res.json({ success: true, data: blog });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -62,7 +89,7 @@ router.get('/:id', auth, async (req, res) => {
 
 
 // ==============================
-// CREATE BLOG (WITH IMAGE)
+// CREATE BLOG
 // ==============================
 router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
@@ -71,7 +98,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
     if (!title || !content) {
       return res.status(400).json({
         success: false,
-        message: 'Title and content are required'
+        message: 'Title and content required',
       });
     }
 
@@ -79,18 +106,17 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       title,
       content,
       category,
-      slug: slugify(title, { lower: true }),
-      image: req.file ? `/uploads/blogs/${req.file.filename}` : null
+      slug: slugify(title + '-' + Date.now(), { lower: true }),
+      image: req.file ? req.file.path : null,
     });
 
-    const savedBlog = await blog.save();
+    const saved = await blog.save();
 
     res.status(201).json({
       success: true,
-      message: 'Blog created successfully',
-      data: savedBlog
+      message: 'Blog created',
+      data: saved,
     });
-
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -98,25 +124,23 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 
 
 // ==============================
-// UPDATE BLOG (WITH IMAGE)
+// UPDATE BLOG
 // ==============================
 router.put('/:id', auth, upload.single('image'), async (req, res) => {
   try {
-    const { title, content, category } = req.body;
+    const updateData = {};
 
-    let updateData = {
-      title,
-      content,
-      category
-    };
-
-    if (title) {
-      updateData.slug = slugify(title, { lower: true });
+    if (req.body.title) {
+      updateData.title = req.body.title;
+      updateData.slug = slugify(req.body.title + '-' + Date.now(), {
+        lower: true,
+      });
     }
 
-    if (req.file) {
-      updateData.image = `/uploads/blogs/${req.file.filename}`;
-    }
+    if (req.body.content) updateData.content = req.body.content;
+    if (req.body.category) updateData.category = req.body.category;
+
+    if (req.file) updateData.image = req.file.path;
 
     const blog = await Blog.findByIdAndUpdate(
       req.params.id,
@@ -127,14 +151,14 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
     if (!blog) {
       return res.status(404).json({
         success: false,
-        message: 'Blog not found'
+        message: 'Blog not found',
       });
     }
 
     res.json({
       success: true,
-      message: 'Blog updated successfully',
-      data: blog
+      message: 'Blog updated',
+      data: blog,
     });
 
   } catch (err) {
@@ -153,13 +177,13 @@ router.delete('/:id', auth, async (req, res) => {
     if (!blog) {
       return res.status(404).json({
         success: false,
-        message: 'Blog not found'
+        message: 'Blog not found',
       });
     }
 
     res.json({
       success: true,
-      message: 'Blog deleted successfully'
+      message: 'Blog deleted',
     });
 
   } catch (err) {

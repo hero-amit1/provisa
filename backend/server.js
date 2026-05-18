@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports, no-undef */
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -84,16 +86,23 @@ app.use('/api/admin/team', require('./routes/admin/team'));
 app.use('/api/admin/testimonials', require('./routes/admin/testimonials'));
 app.use('/api/admin/universities', require('./routes/admin/universities'));
 app.use('/api/admin/services', require('./routes/admin/services'));
-app.use('/api/admin/inquiries', require('./routes/admin/inquiries'));
 app.use('/api/admin/settings', require('./routes/admin/settings'));
+
+// Contact + appointment submissions
+app.use('/api/inquiries', require('./routes/inquiries'));
+
 
 // Public frontend settings (footer/contact)
 app.use('/settings', require('./routes/settings'));
 
-app.use('/api/inquiries', require('./routes/inquiries'));
+
+
+
+
 app.use('/api/blogs', require('./routes/blogs'));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/team', require('./routes/team'));
+
 app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/universities', require('./routes/universities'));
 
@@ -120,7 +129,7 @@ app.use((req, res) => {
 // ==============================
 // GLOBAL ERROR HANDLER
 // ==============================
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error('❌ Error:', err.message);
 
   res.status(500).json({

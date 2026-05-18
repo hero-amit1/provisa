@@ -1,61 +1,141 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Users, Briefcase, DollarSign, Stamp, Plane } from "lucide-react";
+import {
+  BookOpen,
+  Users,
+  Briefcase,
+  DollarSign,
+  Stamp,
+  Plane,
+  GraduationCap,
+} from "lucide-react";
 
 const services = [
-  { _id: '1', title: 'Study Pathway Consultation', description: 'Personalized study pathway planning and university selection.' },
-  { _id: '2', title: 'Interview Preparation', description: 'Mock interviews and coaching for university admissions.' },
-  { _id: '3', title: 'Career Counseling', description: 'Career guidance and job market insights.' },
-  { _id: '4', title: 'Finance & Scholarship', description: 'Scholarship search and financial planning.' },
-  { _id: '5', title: 'Visa Guidance', description: 'Complete visa application assistance.' },
-  { _id: '6', title: 'Pre-departure Briefing', description: 'Orientation and pre-departure support.' }
+  {
+    _id: "study-in-nepal",
+    title: "Study in Nepal",
+    description:
+      "Complete guidance for international students including universities, courses, visa support, and accommodation.",
+  },
+  {
+    _id: "study-pathway",
+    title: "Study Pathway Consultation",
+    description:
+      "Personalized study pathway planning and university selection.",
+  },
+  {
+    _id: "interview-prep",
+    title: "Interview Preparation",
+    description:
+      "Mock interviews and coaching for university admissions.",
+  },
+  {
+    _id: "career-counseling",
+    title: "Career Counseling",
+    description:
+      "Career guidance and job market insights.",
+  },
+  {
+    _id: "finance-scholarship",
+    title: "Finance & Scholarship",
+    description:
+      "Scholarship search and financial planning.",
+  },
+  {
+    _id: "visa-guidance",
+    title: "Visa Guidance",
+    description:
+      "Complete visa application assistance.",
+  },
+  {
+    _id: "pre-departure",
+    title: "Pre-departure Briefing",
+    description:
+      "Orientation and pre-departure support.",
+  },
 ];
 
 const ServicesSection = () => {
-
-  const getIcon = (title) => {
-    if (title.includes('Study')) return BookOpen;
-    if (title.includes('Interview')) return Users;
-    if (title.includes('Career')) return Briefcase;
-    if (title.includes('Finance')) return DollarSign;
-    if (title.includes('Visa')) return Stamp;
-    return Plane;
+  const getIcon = (id: string) => {
+    switch (id) {
+      case "study-in-nepal":
+        return GraduationCap;
+      case "study-pathway":
+        return BookOpen;
+      case "interview-prep":
+        return Users;
+      case "career-counseling":
+        return Briefcase;
+      case "finance-scholarship":
+        return DollarSign;
+      case "visa-guidance":
+        return Stamp;
+      case "pre-departure":
+        return Plane;
+      default:
+        return BookOpen;
+    }
   };
 
-
-
   return (
-    <section className="section-padding data-scroll-reveal" data-animation="slide-up">
+    <section className="section-padding">
       <div className="section-container">
-        <div className="text-center mb-12 data-scroll-reveal animate-slide-up">
-          <p className="section-subtitle mb-2 animate-fade-in animation-delay-100">Services in Nepal</p>
-          <h2 className="section-title mb-4 animate-slide-up animation-delay-200">Our Nepal Services</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto animate-fade-in-up animation-delay-300">
-            We provide guidance and support for students planning their education journey in Nepal. We are always here to help you.
+        {/* Header */}
+        <div className="text-center mb-14">
+          <p className="text-primary font-semibold tracking-wide uppercase">
+            Services in Nepal
+          </p>
+
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 mb-4">
+            Our Expert Consultation Services
+          </h2>
+
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            We provide complete guidance for students planning their education journey in Nepal and abroad.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 data-scroll-reveal">
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => {
-            const Icon = getIcon(service.title);
+            const Icon = getIcon(service._id);
+
             return (
               <Link
                 key={service._id}
                 to={`/services/${service._id}`}
-                className="group bg-card border border-border rounded-xl p-6 card-hover data-scroll-reveal animate-scale-in"
-                style={{ '--order': index + 1 } as React.CSSProperties}
+                className="group relative bg-card border border-border rounded-2xl p-6 overflow-hidden transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl hover:scale-[1.02]"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Icon className="h-12 w-12 text-primary mb-4 animate-rotate-in animation-delay-100 group-hover:animate-spin-slow" />
-                <h3 className="font-heading font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors animate-fade-in-up">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed animate-fade-in">
-                  {service.description}
-                </p>
+                {/* glow background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+
+                <div className="relative z-10">
+                  <div className="mb-5">
+                    <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-all duration-300">
+                      <Icon
+                        className="h-7 w-7 text-primary transition-all duration-700 group-hover:rotate-[360deg] group-hover:scale-110 ease-out"
+                      />
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {service.description}
+                  </p>
+
+                  <div className="mt-5 text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-all flex items-center gap-2">
+                    Explore More →
+                  </div>
+                </div>
               </Link>
             );
           })}
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 

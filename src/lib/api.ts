@@ -168,12 +168,15 @@ export const settingsAPI = {
 
 // INQUIRIES
 export const inquiriesAPI = {
-  getAll: () => apiFetch('/admin/inquiries'),
-  getContact: () => apiFetch('/admin/inquiries?type=contact'),
-  getAppointments: () => apiFetch('/admin/inquiries?type=appointment'),
-  delete: (id: string) => apiFetch(`/admin/inquiries/${id}`, { method: 'DELETE' }),
-  create: (data: unknown) => apiFetch('/inquiries', { method: 'POST', body: JSON.stringify(data) }),
+  // Inquiries feature removed.
+  // Keeping a stub to avoid runtime import errors if any page still references it.
+  getAll: () => Promise.reject(new Error('Inquiries API removed')),
+  getContact: () => Promise.reject(new Error('Inquiries API removed')),
+  getAppointments: () => Promise.reject(new Error('Inquiries API removed')),
+  delete: (_id: string) => Promise.reject(new Error('Inquiries API removed')),
+  create: (_data: unknown) => Promise.reject(new Error('Inquiries API removed')),
 };
+
 
 // SERVICES - NEW
 export const servicesAPI = {

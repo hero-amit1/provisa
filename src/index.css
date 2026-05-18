@@ -4,14 +4,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 /* ========================= */
-/* 2. TAILWIND DIRECTIVES
+/* 2. TAILWIND DIRECTIVES */
 /* ========================= */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ========================= */
-/* 3. ROOT VARIABLES
+/* 3. ROOT VARIABLES */
 /* ========================= */
 @layer base {
   :root {
@@ -32,7 +32,6 @@
 
     --radius: 0.6rem;
 
-    /* UI extras */
     --success: 142 70% 40%;
     --warning: 38 92% 50%;
     --danger: 0 80% 55%;
@@ -57,7 +56,7 @@
 }
 
 /* ========================= */
-/* 4. BASE STYLES
+/* 4. BASE STYLES */
 /* ========================= */
 @layer base {
   * {
@@ -92,10 +91,9 @@
 }
 
 /* ========================= */
-/* 5. COMPONENTS
+/* 5. COMPONENTS */
 /* ========================= */
 @layer components {
-
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -116,7 +114,6 @@
     @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-2;
   }
 
-  /* BUTTON BASE */
   .btn {
     @apply px-5 py-2.5 rounded-lg font-medium transition-all duration-300;
   }
@@ -141,10 +138,9 @@
 }
 
 /* ========================= */
-/* 6. UTILITIES
+/* 6. UTILITIES */
 /* ========================= */
 @layer utilities {
-
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
   }
@@ -163,14 +159,12 @@
     background: rgba(20, 20, 30, 0.7);
   }
 
-  /* Animation Base - Initial hidden state */
   [data-animate],
   [data-scroll-reveal] {
     opacity: 0;
     transform: translateY(30px);
   }
 
-  /* Animation Delays */
   .animation-delay-100 {
     animation-delay: 0.1s;
   }
@@ -191,17 +185,15 @@
     animation-delay: 0.5s;
   }
 
-  /* Stagger for grids */
-  .stagger-1 {
-    animation-delay: calc(0.1s * var(--order, 1));
-  }
-
+  .stagger-1,
   .stagger-2 {
     animation-delay: calc(0.1s * var(--order, 1));
   }
 }
 
-/* Additional Keyframes for Cool Animations */
+/* ========================= */
+/* KEYFRAMES */
+/* ========================= */
 @layer base {
   @keyframes fadeIn {
     from {
@@ -304,33 +296,11 @@
       transform: translateX(0);
     }
   }
-
-  @keyframes slideInUpLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-50px) translateY(50px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0) translateY(0);
-    }
-  }
-
-  @keyframes slideInUpRight {
-    from {
-      opacity: 0;
-      transform: translateX(50px) translateY(50px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0) translateY(0);
-    }
-  }
 }
 
-/* Animation Classes */
+/* ========================= */
+/* ANIMATION CLASSES */
+/* ========================= */
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out forwards;
@@ -341,11 +311,11 @@
   }
 
   .animate-slide-up {
-    animation: slideUp 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation: slideUp 0.8s ease-out forwards;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation: scaleIn 0.6s ease-out forwards;
   }
 
   .animate-rotate-in {
@@ -357,22 +327,22 @@
   }
 
   .animate-slide-in-left {
-    animation: slideInLeft 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation: slideInLeft 0.8s ease-out forwards;
   }
 
   .animate-slide-in-right {
-    animation: slideInRight 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  }
-
-  .animate-slide-up-left {
-    animation: slideInUpLeft 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  }
-
-  .animate-slide-up-right {
-    animation: slideInUpRight 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation: slideInRight 0.8s ease-out forwards;
   }
 
   .animate-spin-slow {
     animation: spin 3s linear infinite;
+  }
+
+  .animate-slide-left {
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+
+  .animate-slide-right {
+    animation: slideInRight 0.8s ease-out forwards;
   }
 }

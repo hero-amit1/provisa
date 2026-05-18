@@ -21,7 +21,7 @@ import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminUniversities from "./pages/admin/AdminUniversities";
-import AdminInquiries from "./pages/admin/AdminInquiries";
+
 import AdminServices from "./pages/admin/AdminServices";
 import AdminSettings from "./pages/admin/AdminSettings";
 import NotFound from "./pages/NotFound";
@@ -87,7 +87,7 @@ const App = () => (
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="universities" element={<AdminUniversities />} />
               <Route path="services" element={<AdminServices />} />
-              <Route path="inquiries" element={<AdminInquiries />} />
+
               <Route path="settings" element={<AdminSettings />} />
             </Route>
             <Route path="*" element={<NotFound />} />

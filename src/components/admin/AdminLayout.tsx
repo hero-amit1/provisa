@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, FileText, Users, MessageSquare,
   GraduationCap, Settings, LogOut, Menu,
-  ChevronLeft, ChevronRight, Send
+  ChevronLeft, ChevronRight
 } from "lucide-react";
 
 const sidebarItems = [
@@ -12,7 +12,7 @@ const sidebarItems = [
   { label: "Team", path: "/admin/team", icon: Users },
   { label: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
   { label: "Universities", path: "/admin/universities", icon: GraduationCap },
-  { label: "Inquiries", path: "/admin/inquiries", icon: Send },
+
   { label: "Settings", path: "/admin/settings", icon: Settings },
 ];
 
@@ -30,9 +30,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 ${
-          collapsed ? "w-20" : "w-64"
-        } bg-white border-r border-gray-200 shadow-sm transform transition-all duration-300
+        className={`fixed inset-y-0 left-0 z-50 ${collapsed ? "w-20" : "w-64"
+          } bg-white border-r border-gray-200 shadow-sm transform transition-all duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0 lg:static`}
       >
@@ -60,11 +59,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               to={item.path}
               onClick={() => setSidebarOpen(false)}
               className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-              ${
-                isActive(item.path)
+              ${isActive(item.path)
                   ? "bg-orange-500 text-white shadow-md"
                   : "text-gray-600 hover:bg-orange-50 hover:text-orange-500"
-              }`}
+                }`}
             >
               <item.icon className="h-5 w-5" />
 

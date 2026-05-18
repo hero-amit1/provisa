@@ -16,7 +16,6 @@ const abroadStudyLinks = [
   { label: "South Korea", path: "/study-abroad/south-korea" },
   { label: "UK", path: "/study-abroad/uk" },
   { label: "USA", path: "/study-abroad/usa" },
-  { label: "Nepal", path: "/study-abroad/nepal" },
 ];
 
 
@@ -24,12 +23,15 @@ const abroadStudyLinks = [
 
 const serviceLinks = [
   { label: "Study in Nepal Consultation", path: "/services/study-in-nepal" },
+  { label: "Study Abroad Consultation", path: "/services/study-abroad" },
   { label: "Interview Preparation", path: "/services/interview-prep" },
   { label: "Career Counseling", path: "/services/career-counseling" },
   { label: "Finance & Scholarship", path: "/services/finance-scholarship" },
   { label: "Visa Guidance", path: "/services/visa-guidance" },
   { label: "Pre-departure Briefing", path: "/services/pre-departure" },
+  { label: "Test Preparation", path: "/services/test-preparation" },
 ];
+
 
 const testPrepLinks = [
   { label: "IELTS", path: "/test-prep/ielts" },

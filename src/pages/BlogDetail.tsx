@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { ArrowLeft, Calendar, User } from "lucide-react";
-import { Link } from "react-router-dom";
-import { blogsAPI } from '@/lib/api';
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, Loader2 } from "lucide-react";
+import { blogsAPI } from "@/lib/api";
 
 interface Blog {
     _id: string;
@@ -18,19 +16,30 @@ interface Blog {
 
 const BlogDetail = () => {
     const { slug } = useParams<{ slug: string }>();
+
     const [blog, setBlog] = useState<Blog | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
 
     useEffect(() => {
         if (!slug) return;
 
         const fetchBlog = async () => {
             try {
+                setLoading(true);
+
                 const data = await blogsAPI.getBySlug(slug);
-                setBlog(data);
+
+                console.log("BLOG DATA:", data);
+
+                // ✅ Handles both:
+                // { blog: {...} }
+                // OR direct blog object
+                setBlog(data.blog || data);
+
             } catch (err) {
-                setError('Blog not found');
+                console.error(err);
+                setError("Blog not found");
             } finally {
                 setLoading(false);
             }
@@ -38,6 +47,10 @@ const BlogDetail = () => {
 
         fetchBlog();
     }, [slug]);
+
+    // ======================
+    // LOADING
+    // ======================
 
     if (loading) {
         return (
@@ -49,12 +62,22 @@ const BlogDetail = () => {
         );
     }
 
+    // ======================
+    // ERROR
+    // ======================
+
     if (error || !blog) {
         return (
             <Layout>
                 <div className="min-h-screen flex flex-col items-center justify-center text-center">
-                    <h1 className="text-4xl font-bold mb-4">Blog Not Found</h1>
-                    <Link to="/blogs" className="text-primary hover:underline">
+                    <h1 className="text-4xl font-bold mb-4">
+                        Blog Not Found
+                    </h1>
+
+                    <Link
+                        to="/blogs"
+                        className="text-primary hover:underline"
+                    >
                         ← Back to Blogs
                     </Link>
                 </div>
@@ -62,12 +85,20 @@ const BlogDetail = () => {
         );
     }
 
+    // ======================
+    // MAIN
+    // ======================
+
     return (
         <Layout>
             <section className="section-padding">
                 <div className="max-w-4xl mx-auto">
+
                     {/* Back Button */}
-                    <Link to="/blogs" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
+                    <Link
+                        to="/blogs"
+                        className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8"
+                    >
                         <ArrowLeft className="h-4 w-4" />
                         Back to Blogs
                     </Link>
@@ -75,7 +106,7 @@ const BlogDetail = () => {
                     {/* Hero Image */}
                     <div className="mb-8 rounded-2xl overflow-hidden shadow-2xl">
                         <img
-                            src={blog.image}
+                            src={blog.image || "/placeholder.jpg"}
                             alt={blog.title}
                             className="w-full h-96 object-cover"
                         />
@@ -83,14 +114,20 @@ const BlogDetail = () => {
 
                     {/* Meta */}
                     <div className="flex items-center gap-6 mb-8 text-sm text-muted-foreground">
+
                         <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            {new Date(blog.createdAt).toLocaleDateString()}
+
+                            {blog.createdAt
+                                ? new Date(blog.createdAt).toLocaleDateString()
+                                : "No Date"}
                         </div>
+
                         <div className="flex items-center gap-1">
                             <User className="h-4 w-4" />
                             ProVisa Team
                         </div>
+
                     </div>
 
                     {/* Title */}
@@ -98,10 +135,19 @@ const BlogDetail = () => {
                         {blog.title}
                     </h1>
 
+                    {/* Excerpt */}
+                    {blog.excerpt && (
+                        <p className="text-lg text-muted-foreground mb-8">
+                            {blog.excerpt}
+                        </p>
+                    )}
+
                     {/* Content */}
                     <div
                         className="prose prose-headings:text-foreground prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg prose-img:max-w-none max-w-none"
-                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                        dangerouslySetInnerHTML={{
+                            __html: blog.content || "",
+                        }}
                     />
 
                 </div>
@@ -111,4 +157,3 @@ const BlogDetail = () => {
 };
 
 export default BlogDetail;
-
