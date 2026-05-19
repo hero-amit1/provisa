@@ -1,17 +1,22 @@
-// API Base URL
+// Production API base - in production, we need the explicit backend URL
+// For Render: the backend is typically at the same host or a separate render service
 const getApiBase = () => {
-  // Use environment variable if provided
+  // If explicitly set, use it (typically needed for production)
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
 
-  // Development fallback
-  if (import.meta.env.DEV) {
-    return 'http://localhost:4000/api';
+  const prod = import.meta.env.PROD as unknown;
+  const dev = import.meta.env.DEV as unknown;
+
+  // In development, rely on Vite's dev-server proxy so requests hit the same origin
+  // (avoids CORS issues in the browser).
+  if (prod !== 'true' && dev !== undefined) {
+    return '/api';
   }
 
-  // Production fallback
-  return '/api';
+  // Fallback for non-dev without an explicit backend URL.
+  return 'VITE_API_BASE_URL=http://localhost:4000/api';
 };
 
 const API_BASE = getApiBase();
@@ -21,10 +26,7 @@ type ApiRequestOptions = {
   body?: FormData | string;
 };
 
-const apiFetch = async (
-  endpoint: string,
-  options: ApiRequestOptions = {}
-) => {
+const apiFetch = async (endpoint: string, options: ApiRequestOptions = {}) => {
   const token = localStorage.getItem('token');
 
   const isFormData = options.body instanceof FormData;
@@ -32,26 +34,19 @@ const apiFetch = async (
   const config: RequestInit = {
     method: options.method || 'GET',
     headers: {
-      ...(token
-        ? { Authorization: `Bearer ${token}` }
-        : {}),
-      ...(!isFormData
-        ? { 'Content-Type': 'application/json' }
-        : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
     },
     body: options.body as BodyInit | undefined,
   };
 
-  const response = await fetch(
-    `${API_BASE}${endpoint}`,
-    config
-  );
+
+  const response = await fetch(`${API_BASE}${endpoint}`, config);
 
   const text = await response.text();
 
   if (!response.ok) {
     let parsed: unknown = null;
-
     try {
       parsed = text ? JSON.parse(text) : null;
     } catch {
@@ -59,9 +54,7 @@ const apiFetch = async (
     }
 
     const messageFromJson =
-      parsed &&
-      typeof parsed === 'object' &&
-      parsed !== null
+      parsed && typeof parsed === 'object' && parsed !== null
         ? (parsed as { message?: unknown }).message
         : undefined;
 
@@ -72,10 +65,14 @@ const apiFetch = async (
           ? text
           : 'API error';
 
-    throw new Error(
-      `${response.status} ${finalMessage}`
-    );
+    const status = response.status;
+
+    // Preserve useful info in the thrown error.
+    throw new Error(`${status} ${finalMessage}`);
   }
+
+
+
 
   if (!text) return null;
 
@@ -85,3 +82,137 @@ const apiFetch = async (
     return text;
   }
 };
+
+// AUTH
+type AnyRecord = Record<string, unknown>;
+
+
+
+// AUTH
+export const authAPI = {
+  login: (credentials: AnyRecord) =>
+    apiFetch('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    }),
+};
+
+
+// BLOGS
+export const blogsAPI = {
+  getAll: () => apiFetch('/admin/blogs'),
+  getById: (id: string) => apiFetch(`/admin/blogs/${id}`),
+  create: (data: unknown) => apiFetch('/admin/blogs', {
+    method: 'POST',
+    body: data instanceof FormData ? data : JSON.stringify(data),
+  }),
+  update: (id: string, data: unknown) => apiFetch(`/admin/blogs/${id}`, {
+    method: 'PUT',
+    body: data instanceof FormData ? data : JSON.stringify(data),
+  }),
+  delete: (id: string) => apiFetch(`/admin/blogs/${id}`, { method: 'DELETE' }),
+  getAllPublic: () => apiFetch('/blogs'),
+  getBySlug: (slug: string) => apiFetch(`/blogs/${slug}`),
+};
+
+// TEAM
+export const teamAPI = {
+  getAll: () => apiFetch('/admin/team'),
+  getAllPublic: () => apiFetch('/team'),
+  create: (data: FormData) => apiFetch('/admin/team', { method: 'POST', body: data }),
+  update: (id: string, data: FormData) => apiFetch(`/admin/team/${id}`, { method: 'PUT', body: data }),
+  delete: (id: string) => apiFetch(`/admin/team/${id}`, { method: 'DELETE' }),
+};
+
+// TESTIMONIALS
+export const testimonialsAPI = {
+  getAll: () => apiFetch('/admin/testimonials'),
+  getAllPublic: () => apiFetch('/testimonials'),
+  create: (data: unknown) => apiFetch('/admin/testimonials', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: unknown) => apiFetch(`/admin/testimonials/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string) => apiFetch(`/admin/testimonials/${id}`, { method: 'DELETE' }),
+};
+
+// UNIVERSITIES
+export const universitiesAPI = {
+  getAll: () => apiFetch('/admin/universities'),
+  getAllPublic: () => apiFetch('/universities'),
+  create: (data: FormData) => apiFetch('/admin/universities', { method: 'POST', body: data }),
+  update: (id: string, data: FormData) => apiFetch(`/admin/universities/${id}`, { method: 'PUT', body: data }),
+  delete: (id: string) => apiFetch(`/admin/universities/${id}`, { method: 'DELETE' }),
+};
+
+// SETTINGS
+export const settingsAPI = {
+  // Public endpoint is mounted on the backend as GET /settings (NOT /api/settings)
+  getPublic: () => {
+    const url = `${window.location.origin}/settings`;
+    return fetch(url)
+      .then(async (r) => {
+        const text = await r.text();
+        if (!r.ok) throw new Error(text || 'API error');
+        return text ? JSON.parse(text) : null;
+      })
+      .catch((e) => {
+        throw e instanceof Error ? e : new Error('API error');
+      });
+  },
+  getAdmin: () => apiFetch('/admin/settings'),
+  updateAdmin: (data: Record<string, unknown>) =>
+    apiFetch('/admin/settings', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+};
+
+
+// INQUIRIES
+export const inquiriesAPI = {
+  // Inquiries feature removed.
+  // Keeping a stub to avoid runtime import errors if any page still references it.
+  getAll: () => Promise.reject(new Error('Inquiries API removed')),
+  getContact: () => Promise.reject(new Error('Inquiries API removed')),
+  getAppointments: () => Promise.reject(new Error('Inquiries API removed')),
+  delete: () => Promise.reject(new Error('Inquiries API removed')),
+  create: () => Promise.reject(new Error('Inquiries API removed')),
+};
+
+
+// SERVICES - NEW
+export const servicesAPI = {
+
+  getAll: () => apiFetch('/admin/services'),
+  getAllPublic: () => apiFetch('/services'),
+  create: (data: unknown) => apiFetch('/admin/services', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: unknown) => apiFetch(`/admin/services/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string) => apiFetch(`/admin/services/${id}`, { method: 'DELETE' }),
+};
+
+const resolveImageUrl = (imagePath?: string | null): string => {
+  if (!imagePath) return '';
+  if (typeof imagePath !== 'string') return '';
+
+  // already absolute (http/https/data)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+    return imagePath;
+  }
+
+  // support relative paths like "/uploads/..." or "uploads/..."
+  const normalized = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+
+  const baseFromEnv = import.meta.env.VITE_API_BASE_URL;
+  if (baseFromEnv && typeof baseFromEnv === 'string' && baseFromEnv.trim()) {
+    const base = baseFromEnv.replace(/\/$/, '');
+    return `${base}${normalized}`;
+  }
+
+  // Fallback: use current origin (works if frontend + backend share a host)
+  // Use an absolute URL so <img> always gets a resolvable URL.
+  return `${window.location.origin}${normalized}`;
+};
+
+
+export { resolveImageUrl };
+export default apiFetch;
+
+
