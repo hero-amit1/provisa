@@ -26,8 +26,16 @@ export default tseslint.config(
 
         languageOptions: {
             globals: globals.browser,
+            // Avoid tsconfigRootDir ambiguity when multiple tsconfig roots exist
+            // (e.g. /home/dell/provisa and /home/dell/provisa/frontend)
+            parserOptions: {
+                // Fix tsconfigRootDir ambiguity only; avoid forcing `project` which can break parsing
+                // when ESLint cannot map all files to the provided TS project.
+                tsconfigRootDir: new URL("./", import.meta.url).pathname,
+            },
         },
     },
+
 
     // =========================
     // REACT PLUGINS (FRONTEND ONLY)
