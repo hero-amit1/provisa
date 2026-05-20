@@ -6,7 +6,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
+  DialogDescription
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
@@ -169,6 +170,7 @@ const AdminUniversities = () => {
 
   return (
     <AdminLayout>
+      {/* React DevTools: useful for inspecting dialog state */}
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-semibold text-lg">Manage Universities</h2>
@@ -191,6 +193,9 @@ const AdminUniversities = () => {
               <DialogTitle>
                 {editingId ? 'Edit' : 'Add'} University
               </DialogTitle>
+              <DialogDescription>
+                {editingId ? 'Update university details below.' : 'Add a new university below.'}
+              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
@@ -275,14 +280,16 @@ const AdminUniversities = () => {
 
       {/* ✨ EDIT CONFIRM MODAL */}
       <Dialog open={!!confirmEdit} onOpenChange={() => setConfirmEdit(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Edit</DialogTitle>
-          </DialogHeader>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Edit</DialogTitle>
+              <DialogDescription>
+                Do you want to edit <b>{confirmEdit?.name}</b>?
+              </DialogDescription>
+            </DialogHeader>
 
-          <p className="text-sm text-muted-foreground">
-            Do you want to edit <b>{confirmEdit?.name}</b>?
-          </p>
+
+
 
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setConfirmEdit(null)}>
@@ -297,14 +304,16 @@ const AdminUniversities = () => {
 
       {/* ✨ DELETE CONFIRM MODAL */}
       <Dialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
-        <DialogContent>
+          <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. Are you sure?
+            </DialogDescription>
           </DialogHeader>
 
-          <p className="text-sm text-muted-foreground">
-            This action cannot be undone. Are you sure?
-          </p>
+
+
 
           <div className="flex gap-2 mt-4">
             <Button variant="outline" onClick={() => setConfirmDelete(null)}>

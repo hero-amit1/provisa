@@ -1,22 +1,89 @@
 const mongoose = require('mongoose');
 
 const settingsSchema = new mongoose.Schema(
-    {
-        companyName: { type: String, default: '' },
-        email: { type: String, default: '' },
-        phone: { type: String, default: '' },
-        address: { type: String, default: '' },
+  {
+    companyName: {
+      type: String,
+      trim: true,
+      default: '',
     },
-    { timestamps: true }
+
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: '',
+    },
+
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
+    address: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+
+    logo: {
+      type: String,
+      default: '',
+    },
+
+    facebook: {
+      type: String,
+      default: '',
+    },
+
+    instagram: {
+      type: String,
+      default: '',
+    },
+
+    linkedin: {
+      type: String,
+      default: '',
+    },
+
+    whatsapp: {
+      type: String,
+      default: '',
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-// Keep a single document for site settings.
-settingsSchema.statics.getSingleton = async function getSingleton() {
-    const doc = await this.findOne({});
-    if (doc) return doc;
-    return this.create({});
-};
+// =========================
+// SINGLETON SETTINGS
+// =========================
 
-module.exports = mongoose.model('Settings', settingsSchema);
+settingsSchema.statics.getSingleton =
+  async function getSingleton() {
+    let doc = await this.findOne({});
 
+    if (!doc) {
+      doc = await this.create({});
+    }
 
+    return doc;
+  };
+
+// =========================
+// CLEAN JSON
+// =========================
+
+settingsSchema.set('toJSON', {
+  transform: (_, ret) => {
+    delete ret.__v;
+    return ret;
+  },
+});
+
+module.exports = mongoose.model(
+  'Settings',
+  settingsSchema
+);

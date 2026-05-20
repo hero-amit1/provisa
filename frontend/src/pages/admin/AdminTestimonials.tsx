@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
@@ -188,9 +189,15 @@ export default function AdminTestimonials() {
 
           <DialogContent className="rounded-2xl">
             <DialogHeader>
-              <DialogTitle>
+            <DialogTitle>
                 {editingId ? "Edit" : "Add"} Testimonial
               </DialogTitle>
+
+              <DialogDescription>
+                {editingId
+                  ? "Update the testimonial details below."
+                  : "Add a new testimonial details below."}
+              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-3">
@@ -223,9 +230,14 @@ export default function AdminTestimonials() {
                 min={1}
                 max={5}
                 value={form.rating}
-                onChange={(e) =>
-                  setForm({ ...form, rating: Number(e.target.value) })
-                }
+onChange={(e) => {
+                  const raw = e.target.value;
+                  const nextVal = raw === '' ? 5 : Number(raw);
+                  const clamped = Number.isFinite(nextVal)
+                    ? Math.min(5, Math.max(1, nextVal))
+                    : 5;
+                  setForm({ ...form, rating: clamped });
+                }}
               />
 
               <Button onClick={handleSave} className="w-full">

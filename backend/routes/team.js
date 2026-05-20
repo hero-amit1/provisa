@@ -1,14 +1,28 @@
 const express = require('express');
 const Team = require('../models/Team');
+
 const router = express.Router();
 
-// Public GET all team members
+// ======================================
+// GET ALL TEAM MEMBERS (PUBLIC)
+// ======================================
 router.get('/', async (req, res) => {
   try {
-    const team = await Team.find().sort({ createdAt: -1 });
-    res.json(team);
+    const team = await Team.find()
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      data: team,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Get team members error:', err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Failed to fetch team members',
+    });
   }
 });
 

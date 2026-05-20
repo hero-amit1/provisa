@@ -1,18 +1,53 @@
 const jwt = require('jsonwebtoken');
 
 const auth = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied. No token provided.' });
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallbacksecret');
+    // Get Authorization header
+    const authHeader = req.header('Authorization');
+
+    // Check if header exists
+    if (!authHeader) {
+      return res.status(401).json({
+        success: false,
+        message: 'Access denied. No token provided.',
+      });
+    }
+
+    // Validate Bearer format
+    if (!authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid authorization format.',
+      });
+    }
+
+    // Extract token
+    const token = authHeader.replace('Bearer ', '').trim();
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Token is missing.',
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallbacksecret'
+    );
+
+    // Attach user to request
     req.user = decoded;
+
     next();
   } catch (err) {
-    res.status(400).json({ error: 'Invalid token.' });
+    console.error('Auth middleware error:', err);
+
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid or expired token.',
+    });
   }
 };
 
