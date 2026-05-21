@@ -8,11 +8,12 @@ const {
   createCloudinaryStorage,
 } = require('../../utils/cloudinaryStorage');
 
+const conditionalUpload = require('../../middleware/conditionalUpload');
 
 const router = express.Router();
 
 // ==============================
-// MULTER + CLOUDINARY STORAGE
+// CLOUDINARY STORAGE
 // ==============================
 
 const storage = createCloudinaryStorage({
@@ -20,6 +21,9 @@ const storage = createCloudinaryStorage({
   width: 1000,
 });
 
+// ==============================
+// MULTER CONFIG
+// ==============================
 
 const upload = multer({
   storage,
@@ -53,85 +57,47 @@ const upload = multer({
 });
 
 // ==============================
-// IMAGE UPLOAD MIDDLEWARE
+// MULTER MIDDLEWARE
 // ==============================
 
-const { conditionalUpload } = require('../../middleware/conditionalUpload');
-
-// Helper for consistent upload error logs
-const logUploadError = (context, err, req) => {
-  const file = req.file;
-
-  console.error('Upload error:', {
-    context,
-    message: err?.message,
-    http_code: err?.http_code,
-    name: err?.name,
-    mimetype: file?.mimetype,
-    size: file?.size,
-    hasFile: !!file,
-    originalname: file?.originalname,
-    fieldname: file?.fieldname,
-    contentType: req.headers['content-type'],
-    method: req.method,
-    path: req.originalUrl,
-    bodyKeys: req.body ? Object.keys(req.body) : [],
-    authUserId: req.user?._id || req.user?.id || null,
-  });
-};
-
-const uploadMiddleware = (req, res, next) =>
-  conditionalUpload(upload)(req, res, (err) => {
-    if (!err) return next();
-
-    logUploadError('admin/universities', err, req);
-
-    const file = req.file;
-
-    return res.status(400).json({
-      success: false,
-      message: err?.message || 'Image upload failed',
-      cloudinaryHttpCode: err?.http_code,
-      cloudinaryErrorName: err?.name,
-      mimetype: file?.mimetype,
-      size: file?.size,
-      hasFile: !!file,
-    });
-  });
-
-
-
-
+const uploadMiddleware =
+  conditionalUpload(
+    upload.single('image')
+  );
 
 // ==============================
 // GET ALL UNIVERSITIES
 // ==============================
 
-router.get('/', auth, async (req, res) => {
-  try {
-    const universities =
-      await University.find()
-        .sort({ createdAt: -1 })
-        .lean();
+router.get(
+  '/',
+  auth,
+  async (req, res) => {
+    try {
+      const universities =
+        await University.find()
+          .sort({ createdAt: -1 })
+          .lean();
 
-    res.status(200).json({
-      success: true,
-      data: universities,
-    });
-  } catch (err) {
-    console.error(
-      'Get universities error:',
-      err
-    );
+      res.status(200).json({
+        success: true,
+        data: universities,
+      });
+    } catch (err) {
+      console.error(
+        'Get universities error:',
+        err
+      );
 
-    res.status(500).json({
-      success: false,
-      message:
-        err.message ||
-        'Failed to fetch universities',
-    });
+      res.status(500).json({
+        success: false,
+        message:
+          err.message ||
+          'Failed to fetch universities',
+      });
+    }
   }
-});
+);
 
 // ==============================
 // CREATE UNIVERSITY
@@ -176,16 +142,17 @@ router.post(
         });
       }
 
-      // Parse programs array
+      // Parse programs
       let parsedPrograms = [];
 
       if (programs) {
         try {
           parsedPrograms =
-            typeof programs === 'string'
+            typeof programs ===
+            'string'
               ? JSON.parse(programs)
               : programs;
-        } catch {
+        } catch (err) {
           parsedPrograms = [];
         }
       }
@@ -211,7 +178,8 @@ router.post(
           tuitionFee:
             tuitionFee || '',
 
-          intake: intake || '',
+          intake:
+            intake || '',
 
           programs:
             parsedPrograms,
@@ -223,23 +191,22 @@ router.post(
           status:
             status || 'active',
 
-          image:
-            req.file
-              ? req.file.secure_url ||
-                req.file.url ||
-                req.file.path ||
-                req.file.filename ||
-                ''
-              : '',
+          image: req.file
+            ? req.file.secure_url ||
+              req.file.path ||
+              req.file.url ||
+              ''
+            : '',
         });
 
-      await university.save();
+      const savedUniversity =
+        await university.save();
 
       res.status(201).json({
         success: true,
         message:
           'University created successfully',
-        data: university,
+        data: savedUniversity,
       });
     } catch (err) {
       console.error(
@@ -247,7 +214,7 @@ router.post(
         err
       );
 
-      res.status(400).json({
+      res.status(500).json({
         success: false,
         message:
           err.message ||
@@ -280,7 +247,9 @@ router.put(
       const updateData = {};
 
       // Name
-      if (req.body.name !== undefined) {
+      if (
+        req.body.name !== undefined
+      ) {
         updateData.name =
           req.body.name.trim();
       }
@@ -295,7 +264,9 @@ router.put(
       }
 
       // City
-      if (req.body.city !== undefined) {
+      if (
+        req.body.city !== undefined
+      ) {
         updateData.city =
           req.body.city;
       }
@@ -323,9 +294,10 @@ router.put(
         req.body.ranking !==
         undefined
       ) {
-        updateData.ranking = Number(
-          req.body.ranking
-        );
+        updateData.ranking =
+          Number(
+            req.body.ranking
+          ) || 0;
       }
 
       // Tuition Fee
@@ -353,14 +325,16 @@ router.put(
       ) {
         try {
           updateData.programs =
-            typeof req.body.programs ===
+            typeof req.body
+              .programs ===
             'string'
               ? JSON.parse(
                   req.body.programs
                 )
               : req.body.programs;
-        } catch {
-          updateData.programs = [];
+        } catch (err) {
+          updateData.programs =
+            [];
         }
       }
 
@@ -389,9 +363,9 @@ router.put(
       if (req.file) {
         updateData.image =
           req.file.secure_url ||
-          req.file.url ||
           req.file.path ||
-          req.file.filename;
+          req.file.url ||
+          '';
       }
 
       const university =
@@ -424,7 +398,7 @@ router.put(
         err
       );
 
-      res.status(400).json({
+      res.status(500).json({
         success: false,
         message:
           err.message ||
@@ -474,6 +448,46 @@ router.delete(
           'Failed to delete university',
       });
     }
+  }
+);
+
+// ==============================
+// MULTER ERROR HANDLER
+// ==============================
+
+router.use(
+  (err, req, res, next) => {
+    if (
+      err instanceof
+      multer.MulterError
+    ) {
+      if (
+        err.code ===
+        'LIMIT_FILE_SIZE'
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            'File size too large. Maximum size is 2MB',
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+      });
+    }
+
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message:
+          err.message ||
+          'Upload failed',
+      });
+    }
+
+    next();
   }
 );
 

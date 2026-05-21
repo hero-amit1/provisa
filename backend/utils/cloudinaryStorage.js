@@ -4,6 +4,10 @@ dotenv.config();
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+// ======================================
+// VALIDATE ENV VARIABLES
+// ======================================
+
 function ensureCloudinaryConfig() {
   const required = [
     'CLOUDINARY_CLOUD_NAME',
@@ -11,37 +15,60 @@ function ensureCloudinaryConfig() {
     'CLOUDINARY_API_SECRET',
   ];
 
-  const missing = required.filter((k) => !process.env[k]);
-  if (missing.length) {
-    const msg = `Missing Cloudinary environment variables: ${missing.join(
-      ', '
-    )}`;
-    const err = new Error(msg);
-    err.code = 'E_CLOUDINARY_CONFIG';
-    throw err;
+  const missing = required.filter(
+    (key) => !process.env[key]
+  );
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing Cloudinary environment variables: ${missing.join(', ')}`
+    );
   }
 
-  // Debugging aid: log Cloudinary identity + secret presence (never log the secret itself)
-  // Helps diagnose “Invalid Signature” issues.
-  const secret = process.env.CLOUDINARY_API_SECRET;
+  // Debug log
   if (process.env.CLOUDINARY_DEBUG === '1') {
-    console.log('[Cloudinary] config loaded:', {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret_present: typeof secret === 'string' && secret.length > 0,
-      api_secret_length: typeof secret === 'string' ? secret.length : undefined,
+    console.log('================================');
+    console.log('CLOUDINARY CONFIG');
+    console.log('================================');
+
+    console.log({
+      cloud_name:
+        process.env.CLOUDINARY_CLOUD_NAME,
+
+      api_key:
+        process.env.CLOUDINARY_API_KEY,
+
+      api_secret_exists:
+        !!process.env.CLOUDINARY_API_SECRET,
+
+      api_secret_length:
+        process.env.CLOUDINARY_API_SECRET
+          ? process.env.CLOUDINARY_API_SECRET.length
+          : 0,
     });
+
+    console.log('================================');
   }
 
+  // IMPORTANT:
+  // Remove accidental spaces/newlines from .env
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name:
+      process.env.CLOUDINARY_CLOUD_NAME.trim(),
+
+    api_key:
+      process.env.CLOUDINARY_API_KEY.trim(),
+
+    api_secret:
+      process.env.CLOUDINARY_API_SECRET.trim(),
   });
 }
 
-
 ensureCloudinaryConfig();
+
+// ======================================
+// DEFAULTS
+// ======================================
 
 const DEFAULT_ALLOWED_FORMATS = [
   'jpg',
@@ -50,36 +77,41 @@ const DEFAULT_ALLOWED_FORMATS = [
   'webp',
 ];
 
-const DEFAULT_TRANSFORMATION = (width) => [
-  {
-    width,
-    crop: 'limit',
-  },
-];
+// ======================================
+// CREATE STORAGE
+// ======================================
 
-function createCloudinaryStorage({ folder, width }) {
+function createCloudinaryStorage({
+  folder,
+  width = 1200,
+}) {
   if (!folder) {
-    throw new Error('createCloudinaryStorage: folder is required');
+    throw new Error(
+      'createCloudinaryStorage: folder is required'
+    );
   }
 
-  const numericWidth = width ? Number(width) : undefined;
-  const finalWidth = Number.isFinite(numericWidth) ? numericWidth : 1200;
-
-  // NOTE: `params` must be deterministic/stable. Using an async function can
-  // cause subtle signature mismatches depending on the multer-storage-cloudinary
-  // version.
   return new CloudinaryStorage({
     cloudinary,
-    // Some versions of `multer-storage-cloudinary` can be picky about where the
-    // credentials live; explicitly passing them makes signature generation stable.
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-    params: () => ({
+
+    // CRITICAL FIX:
+    // DO NOT PASS api_key/api_secret HERE
+    // It causes Invalid Signature in many versions
+    params: {
       folder,
+
       resource_type: 'image',
-      allowed_formats: DEFAULT_ALLOWED_FORMATS,
-      transformation: DEFAULT_TRANSFORMATION(finalWidth),
-    }),
+
+      allowed_formats:
+        DEFAULT_ALLOWED_FORMATS,
+
+      transformation: [
+        {
+          width: Number(width),
+          crop: 'limit',
+        },
+      ],
+    },
   });
 }
 
@@ -87,4 +119,3 @@ module.exports = {
   cloudinary,
   createCloudinaryStorage,
 };
-

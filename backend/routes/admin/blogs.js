@@ -9,6 +9,7 @@ const {
   createCloudinaryStorage,
 } = require('../../utils/cloudinaryStorage');
 
+const conditionalUpload = require('../../middleware/conditionalUpload');
 
 const router = express.Router();
 
@@ -20,7 +21,6 @@ const storage = createCloudinaryStorage({
   folder: 'blogs',
   width: 1200,
 });
-
 
 // ======================================
 // MULTER CONFIG
@@ -58,86 +58,46 @@ const upload = multer({
 });
 
 // ======================================
-// HANDLE UPLOAD ERRORS
+// MULTER MIDDLEWARE
 // ======================================
 
-const { conditionalUpload } = require('../../middleware/conditionalUpload');
-
-const uploadMiddleware = (req, res, next) =>
-  conditionalUpload(upload)(req, res, (err) => {
-    if (!err) return next();
-
-    logUploadError('admin/blogs', err, req);
-
-    const file = req.file;
-
-    return res.status(400).json({
-      success: false,
-      message: err?.message || 'Image upload failed',
-      cloudinaryHttpCode: err?.http_code,
-      cloudinaryErrorName: err?.name,
-      mimetype: file?.mimetype,
-      size: file?.size,
-      hasFile: !!file,
-    });
-  });
-
-// Helper for consistent upload error logs
-const logUploadError = (context, err, req) => {
-  const file = req.file;
-
-  console.error('Upload error:', {
-    context,
-    message: err?.message,
-    http_code: err?.http_code,
-    name: err?.name,
-    mimetype: file?.mimetype,
-    size: file?.size,
-    hasFile: !!file,
-    originalname: file?.originalname,
-    fieldname: file?.fieldname,
-    contentType: req.headers['content-type'],
-    method: req.method,
-    path: req.originalUrl,
-    bodyKeys: req.body ? Object.keys(req.body) : [],
-    // extra diagnostics to correlate logs
-    authUserId: req.user?._id || req.user?.id || null,
-  });
-};
-
-
-
-
-
+const uploadMiddleware =
+  conditionalUpload(
+    upload.single('image')
+  );
 
 // ======================================
 // GET ALL BLOGS
 // ======================================
 
-router.get('/', auth, async (req, res) => {
-  try {
-    const blogs = await Blog.find()
-      .sort({ createdAt: -1 })
-      .lean();
+router.get(
+  '/',
+  auth,
+  async (req, res) => {
+    try {
+      const blogs = await Blog.find()
+        .sort({ createdAt: -1 })
+        .lean();
 
-    res.status(200).json({
-      success: true,
-      data: blogs,
-    });
-  } catch (err) {
-    console.error(
-      'Get blogs error:',
-      err
-    );
+      res.status(200).json({
+        success: true,
+        data: blogs,
+      });
+    } catch (err) {
+      console.error(
+        'Get blogs error:',
+        err
+      );
 
-    res.status(500).json({
-      success: false,
-      message:
-        err.message ||
-        'Failed to fetch blogs',
-    });
+      res.status(500).json({
+        success: false,
+        message:
+          err.message ||
+          'Failed to fetch blogs',
+      });
+    }
   }
-});
+);
 
 // ======================================
 // GET SINGLE BLOG
@@ -208,7 +168,6 @@ router.post(
         status,
       } = req.body;
 
-      // Validation
       if (!title || !content) {
         return res.status(400).json({
           success: false,
@@ -217,7 +176,6 @@ router.post(
         });
       }
 
-      // Generate unique slug
       const slug = slugify(
         `${title}-${Date.now()}`,
         {
@@ -240,14 +198,12 @@ router.post(
 
         slug,
 
-        image:
-          req.file
-            ? req.file.secure_url ||
-              req.file.url ||
-              req.file.path ||
-              req.file.filename ||
-              ''
-            : '',
+        image: req.file
+          ? req.file.secure_url ||
+            req.file.path ||
+            req.file.url ||
+            ''
+          : '',
       });
 
       const savedBlog =
@@ -297,7 +253,6 @@ router.put(
 
       const updateData = {};
 
-      // Update title + slug
       if (req.body.title) {
         updateData.title =
           req.body.title.trim();
@@ -311,7 +266,6 @@ router.put(
         );
       }
 
-      // Update content
       if (
         req.body.content !== undefined
       ) {
@@ -319,7 +273,6 @@ router.put(
           req.body.content;
       }
 
-      // Update excerpt
       if (
         req.body.excerpt !== undefined
       ) {
@@ -327,7 +280,6 @@ router.put(
           req.body.excerpt;
       }
 
-      // Update category
       if (
         req.body.category !== undefined
       ) {
@@ -335,7 +287,6 @@ router.put(
           req.body.category;
       }
 
-      // Update status
       if (
         req.body.status !== undefined
       ) {
@@ -343,13 +294,12 @@ router.put(
           req.body.status;
       }
 
-      // Update image
       if (req.file) {
         updateData.image =
           req.file.secure_url ||
-          req.file.url ||
           req.file.path ||
-          req.file.filename;
+          req.file.url ||
+          '';
       }
 
       const blog =
