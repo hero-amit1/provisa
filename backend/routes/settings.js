@@ -1,5 +1,5 @@
 const express = require('express');
-const Settings = require('../models/Settings.cjs');
+const Settings = require('../models/Settings.js');
 
 const router = express.Router();
 

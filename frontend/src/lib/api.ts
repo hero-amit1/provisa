@@ -44,6 +44,33 @@ const apiFetch = async (
 
   const headers: HeadersInit = {};
 
+  const logBodyForDebug = (body: ApiRequestOptions['body']) => {
+    if (!body) return undefined;
+    if (body instanceof FormData) {
+      try {
+        return Array.from(body.entries()).reduce(
+          (acc: Record<string, unknown>, [k, v]) => {
+            // If multiple fields share the same key (e.g., multiple files), keep the array.
+            const existing = acc[k];
+            if (existing === undefined) {
+              acc[k] = v;
+            } else if (Array.isArray(existing)) {
+              acc[k] = [...existing, v];
+            } else {
+              acc[k] = [existing, v];
+            }
+            return acc;
+          },
+          {}
+        );
+      } catch {
+        return '[FormData: unable to enumerate entries]';
+      }
+    }
+
+    return body;
+  };
+
   // Auth token
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -61,7 +88,7 @@ const apiFetch = async (
   console.log('API REQUEST');
   console.log('URL:', url);
   console.log('METHOD:', options.method || 'GET');
-  console.log('BODY:', options.body);
+  console.log('BODY:', logBodyForDebug(options.body));
   console.log('========================');
 
   const response = await fetch(url, {
@@ -107,16 +134,20 @@ const apiFetch = async (
               ? text
               : 'API error';
 
+    // Improve frontend debugging: log parsed error details too
+    console.error('API ERROR TEXT (raw):', text);
+    if (parsed && typeof parsed === 'object') {
+      console.error('API ERROR DETAILS (parsed):', parsed);
+    }
+
     console.error('========================');
     console.error('API ERROR');
     console.error('URL:', url);
     console.error('STATUS:', response.status);
-    console.error('RESPONSE:', parsed || text);
+    console.error('RESPONSE (parsed||text):', parsed || text);
     console.error('========================');
 
-    throw new Error(
-      `${response.status} ${finalMessage}`
-    );
+    throw new Error(`${response.status} ${finalMessage}`);
   }
 
   // Empty response
@@ -270,15 +301,16 @@ export const universitiesAPI = {
 
 export const settingsAPI = {
   // PUBLIC SETTINGS
-  getPublic: () => apiFetch('/settings'),
+  // Backend serves this route as `/settings` (NOT `/api/settings`).
+  getPublic: async () => {
+    const url = `${window.location.origin}/settings`;
+    return apiFetch(url.replace(window.location.origin, '') as string);
+  },
 
   // ADMIN SETTINGS
-  getAdmin: () =>
-    apiFetch('/admin/settings'),
+  getAdmin: () => apiFetch('/admin/settings'),
 
-  updateAdmin: (
-    data: Record<string, unknown>
-  ) =>
+  updateAdmin: (data: Record<string, unknown>) =>
     apiFetch('/admin/settings', {
       method: 'PUT',
       body: JSON.stringify(data),

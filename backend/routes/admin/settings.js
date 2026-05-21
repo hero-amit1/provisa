@@ -1,6 +1,12 @@
 const express = require('express');
-const Settings = require('../../models/Settings');
+const Settings = require('../../models/Settings.js');
 const auth = require('../../middleware/auth');
+
+const multer = require('multer');
+
+const {
+  createCloudinaryStorage,
+} = require('../../utils/cloudinaryStorage');
 
 const router = express.Router();
 
@@ -58,7 +64,54 @@ router.get('/', auth, async (req, res) => {
 // UPDATE SETTINGS (ADMIN)
 // ======================================
 
-router.put('/', auth, async (req, res) => {
+// ==============================
+// CLOUDINARY STORAGE (LOGO)
+// ==============================
+
+const storage = createCloudinaryStorage({
+  folder: 'settings',
+  width: 400,
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+    ];
+
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return cb(new Error('Only jpg, jpeg, png, and webp images are allowed'));
+    }
+
+    cb(null, true);
+  },
+});
+
+const uploadMiddleware = (req, res, next) => {
+  upload.single('logo')(req, res, (err) => {
+    if (err) {
+      console.error('Upload error:', err);
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+        cloudinaryHttpCode: err.http_code,
+        cloudinaryErrorName: err.name,
+        cloudinaryDebugString:
+          process.env.CLOUDINARY_DEBUG === '1' ? 'enabled' : 'disabled',
+      });
+    }
+    next();
+  });
+};
+
+router.put('/', auth, uploadMiddleware, async (req, res) => {
   try {
     console.log(
       'SETTINGS UPDATE BODY:',
@@ -83,7 +136,6 @@ router.put('/', auth, async (req, res) => {
       'email',
       'phone',
       'address',
-      'logo',
       'facebook',
       'instagram',
       'linkedin',
@@ -104,6 +156,16 @@ router.put('/', auth, async (req, res) => {
       'FILTERED SETTINGS:',
       incoming
     );
+
+    // Logo upload (optional)
+    if (req.file) {
+      incoming.logo =
+        req.file.secure_url ||
+        req.file.url ||
+        req.file.path ||
+        req.file.filename ||
+        '';
+    }
 
     const settings =
       await Settings.getSingleton();

@@ -2,6 +2,12 @@ const express = require('express');
 const Testimonial = require('../../models/Testimonial');
 const auth = require('../../middleware/auth');
 
+const multer = require('multer');
+
+const {
+  createCloudinaryStorage,
+} = require('../../utils/cloudinaryStorage');
+
 const router = express.Router();
 
 // ======================================
@@ -35,10 +41,61 @@ router.get('/', auth, async (req, res) => {
 });
 
 // ======================================
+// CLOUDINARY STORAGE
+// ======================================
+
+const storage = createCloudinaryStorage({
+  folder: 'testimonials',
+  width: 1000,
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+    ];
+
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return cb(
+        new Error('Only jpg, jpeg, png, and webp images are allowed')
+      );
+    }
+
+    cb(null, true);
+  },
+});
+
+const uploadMiddleware = (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('Upload error:', err);
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+        cloudinaryHttpCode: err.http_code,
+        cloudinaryErrorName: err.name,
+        cloudinaryDebugString:
+          process.env.CLOUDINARY_DEBUG === '1'
+            ? 'enabled'
+            : 'disabled',
+      });
+    }
+    next();
+  });
+};
+
+// ======================================
 // CREATE TESTIMONIAL
 // ======================================
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, uploadMiddleware, async (req, res) => {
   try {
     console.log(
       'CREATE TESTIMONIAL BODY:',
@@ -66,31 +123,32 @@ router.post('/', auth, async (req, res) => {
       });
     }
 
-    const testimonial =
-      new Testimonial({
-        name: name.trim(),
+    const testimonial = new Testimonial({
+      name: name.trim(),
 
-        university:
-          university.trim(),
+      university: university.trim(),
 
-        text: text.trim(),
+      text: text.trim(),
 
-        rating:
-          Number(rating) || 5,
+      rating: Number(rating) || 5,
 
-        image: image || '',
+      image: req.file
+        ? req.file.secure_url ||
+          req.file.url ||
+          req.file.path ||
+          req.file.filename ||
+          ''
+        : image || '',
 
-        country: country || '',
+      country: country || '',
 
-        course: course || '',
+      course: course || '',
 
-        featured:
-          featured === true ||
-          featured === 'true',
+      featured:
+        featured === true || featured === 'true',
 
-        status:
-          status || 'active',
-      });
+      status: status || 'active',
+    });
 
     await testimonial.save();
 
@@ -119,7 +177,7 @@ router.post('/', auth, async (req, res) => {
 // UPDATE TESTIMONIAL
 // ======================================
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, uploadMiddleware, async (req, res) => {
   try {
     console.log(
       'UPDATE TESTIMONIAL BODY:',
@@ -158,12 +216,18 @@ router.put('/:id', auth, async (req, res) => {
       );
     }
 
-    // Image
-    if (
-      req.body.image !== undefined
-    ) {
+    // Image (optional)
+    if (req.file) {
       updateData.image =
-        req.body.image;
+        req.file.secure_url ||
+        req.file.url ||
+        req.file.path ||
+        req.file.filename;
+    } else if (
+      req.body.image !== undefined &&
+      req.body.image !== ''
+    ) {
+      updateData.image = req.body.image;
     }
 
     // Country

@@ -16,6 +16,17 @@ import { testimonialsAPI } from "@/lib/api";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
 
+const getArray = (res: unknown): Testimonial[] => {
+  if (Array.isArray(res)) return res as Testimonial[];
+
+  if (res && typeof res === "object") {
+    const maybe = res as { data?: unknown };
+    if (Array.isArray(maybe.data)) return maybe.data as Testimonial[];
+  }
+
+  return [];
+};
+
 interface Testimonial {
   _id: string;
   name: string;
@@ -45,7 +56,7 @@ export default function AdminTestimonials() {
     setLoading(true);
     try {
       const data = await testimonialsAPI.getAll();
-      setItems(Array.isArray(data) ? data : data?.data || []);
+      setItems(getArray(data));
 
       toast({
         title: "✨ Updated",

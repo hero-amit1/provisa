@@ -16,10 +16,14 @@ const TestimonialsSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
+        const fetchTestimonials = async () => {
       try {
-        const data = await testimonialsAPI.getAllPublic();
-        setTestimonials(Array.isArray(data) ? data : []);
+        const res = await testimonialsAPI.getAllPublic();
+
+        const normalized =
+          Array.isArray(res) ? res : res?.data;
+
+        setTestimonials(Array.isArray(normalized) ? normalized : []);
       } catch (err) {
         console.error('Testimonials load failed:', err);
         setTestimonials([]);

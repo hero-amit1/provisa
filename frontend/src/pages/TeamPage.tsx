@@ -12,8 +12,12 @@ const TeamPage = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const data = await teamAPI.getAllPublic();
-        setTeamMembers(Array.isArray(data) ? data : []);
+        const res = await teamAPI.getAllPublic();
+        const normalized = Array.isArray(res) ? res : res?.data;
+
+        setTeamMembers(
+          Array.isArray(normalized) ? normalized : []
+        );
       } catch (err) {
         console.error("Team load failed:", err);
         setTeamMembers([]);

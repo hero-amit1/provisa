@@ -65,7 +65,9 @@ const AdminDashboard = () => {
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
+    // AuthContext uses `token` + `user` keys in localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.href = "/admin/login";
   };
 

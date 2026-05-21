@@ -3,56 +3,24 @@ const Blog = require('../../models/Blog');
 const auth = require('../../middleware/auth');
 
 const slugify = require('slugify');
-const dotenv = require('dotenv');
-
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
-dotenv.config();
+const {
+  createCloudinaryStorage,
+} = require('../../utils/cloudinaryStorage');
+
 
 const router = express.Router();
-
-// ======================================
-// CLOUDINARY CONFIG
-// ======================================
-
-cloudinary.config({
-  cloud_name:
-    process.env.CLOUDINARY_CLOUD_NAME,
-
-  api_key:
-    process.env.CLOUDINARY_API_KEY,
-
-  api_secret:
-    process.env.CLOUDINARY_API_SECRET,
-});
 
 // ======================================
 // CLOUDINARY STORAGE
 // ======================================
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-
-  params: async (req, file) => ({
-    folder: 'blogs',
-
-    allowed_formats: [
-      'jpg',
-      'jpeg',
-      'png',
-      'webp',
-    ],
-
-    transformation: [
-      {
-        width: 1200,
-        crop: 'limit',
-      },
-    ],
-  }),
+const storage = createCloudinaryStorage({
+  folder: 'blogs',
+  width: 1200,
 });
+
 
 // ======================================
 // MULTER CONFIG
@@ -93,31 +61,54 @@ const upload = multer({
 // HANDLE UPLOAD ERRORS
 // ======================================
 
-const uploadMiddleware = (
-  req,
-  res,
-  next
-) => {
-  upload.single('image')(
-    req,
-    res,
-    (err) => {
-      if (err) {
-        console.error(
-          'Upload error:',
-          err
-        );
+const { conditionalUpload } = require('../../middleware/conditionalUpload');
 
-        return res.status(400).json({
-          success: false,
-          message: err.message,
-        });
-      }
+const uploadMiddleware = (req, res, next) =>
+  conditionalUpload(upload)(req, res, (err) => {
+    if (!err) return next();
 
-      next();
-    }
-  );
+    logUploadError('admin/blogs', err, req);
+
+    const file = req.file;
+
+    return res.status(400).json({
+      success: false,
+      message: err?.message || 'Image upload failed',
+      cloudinaryHttpCode: err?.http_code,
+      cloudinaryErrorName: err?.name,
+      mimetype: file?.mimetype,
+      size: file?.size,
+      hasFile: !!file,
+    });
+  });
+
+// Helper for consistent upload error logs
+const logUploadError = (context, err, req) => {
+  const file = req.file;
+
+  console.error('Upload error:', {
+    context,
+    message: err?.message,
+    http_code: err?.http_code,
+    name: err?.name,
+    mimetype: file?.mimetype,
+    size: file?.size,
+    hasFile: !!file,
+    originalname: file?.originalname,
+    fieldname: file?.fieldname,
+    contentType: req.headers['content-type'],
+    method: req.method,
+    path: req.originalUrl,
+    bodyKeys: req.body ? Object.keys(req.body) : [],
+    // extra diagnostics to correlate logs
+    authUserId: req.user?._id || req.user?.id || null,
+  });
 };
+
+
+
+
+
 
 // ======================================
 // GET ALL BLOGS
@@ -249,9 +240,14 @@ router.post(
 
         slug,
 
-        image: req.file
-          ? req.file.path
-          : '',
+        image:
+          req.file
+            ? req.file.secure_url ||
+              req.file.url ||
+              req.file.path ||
+              req.file.filename ||
+              ''
+            : '',
       });
 
       const savedBlog =
@@ -350,7 +346,10 @@ router.put(
       // Update image
       if (req.file) {
         updateData.image =
-          req.file.path;
+          req.file.secure_url ||
+          req.file.url ||
+          req.file.path ||
+          req.file.filename;
       }
 
       const blog =

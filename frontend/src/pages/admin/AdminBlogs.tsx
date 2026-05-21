@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
-import { blogsAPI } from "@/lib/api";
+import { blogsAPI, resolveImageUrl } from "@/lib/api";
+
 
 import { Button } from "@/components/ui/button";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
@@ -29,12 +31,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-const resolveImage = (img?: string) => {
-  if (!img || typeof img !== "string") return "";
-  if (img.startsWith("http")) return img;
-  return `http://localhost:5000${img}`;
-};
 
 const fallbackImage =
   "https://via.placeholder.com/100x100.png?text=No+Image";
@@ -343,7 +339,7 @@ const AdminBlogs = () => {
                   <tr key={b._id} className="border-b hover:bg-muted/40">
                     <td className="p-4">
                       <img
-                        src={resolveImage(b.image) || fallbackImage}
+                        src={resolveImageUrl(b.image) || fallbackImage}
                         className="w-12 h-12 object-cover rounded"
                       />
                     </td>

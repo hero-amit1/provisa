@@ -21,10 +21,19 @@ const UniversitiesPage = () => {
 
   const loadUniversities = async () => {
     try {
-      const data = await universitiesAPI.getAllPublic();
-      setUniversities(data);
+      const res = await universitiesAPI.getAllPublic();
+
+      const normalized =
+        Array.isArray(res)
+          ? res
+          : Array.isArray((res as { data?: unknown } | undefined)?.data)
+          ? (res as { data?: unknown }).data
+          : [];
+
+      setUniversities(Array.isArray(normalized) ? normalized : []);
     } catch (error) {
       console.error('Failed to load universities:', error);
+      setUniversities([]);
     } finally {
       setLoading(false);
     }
