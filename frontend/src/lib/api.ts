@@ -1,6 +1,3 @@
-// =========================
-// API BASE
-// =========================
 
 const getApiBase = () => {
   // Explicit backend URL from env
@@ -111,15 +108,15 @@ const apiFetch = async (
   if (!response.ok) {
     const messageFromJson =
       parsed &&
-      typeof parsed === 'object' &&
-      parsed !== null
+        typeof parsed === 'object' &&
+        parsed !== null
         ? (parsed as { message?: unknown }).message
         : undefined;
 
     const errorFromJson =
       parsed &&
-      typeof parsed === 'object' &&
-      parsed !== null
+        typeof parsed === 'object' &&
+        parsed !== null
         ? (parsed as { error?: unknown }).error
         : undefined;
 
@@ -298,17 +295,18 @@ export const universitiesAPI = {
 // =========================
 // SETTINGS
 // =========================
+// =========================
+// SETTINGS
+// =========================
 
 export const settingsAPI = {
   // PUBLIC SETTINGS
-  // Backend serves this route as `/settings` (NOT `/api/settings`).
-  getPublic: async () => {
-    const url = `${window.location.origin}/settings`;
-    return apiFetch(url.replace(window.location.origin, '') as string);
-  },
+  getPublic: () =>
+    apiFetch('/admin/settings'),
 
   // ADMIN SETTINGS
-  getAdmin: () => apiFetch('/admin/settings'),
+  getAdmin: () =>
+    apiFetch('/admin/settings'),
 
   updateAdmin: (data: Record<string, unknown>) =>
     apiFetch('/admin/settings', {

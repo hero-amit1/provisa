@@ -7,10 +7,14 @@ const testData = {
   toefl: { name: "TOEFL", score: "90+", desc: "Test of English as a Foreign Language for universities." },
   sat: { name: "SAT", score: "1200+", desc: "Scholastic Assessment Test for undergraduate admissions." },
   pte: { name: "PTE", score: "58+", desc: "Pearson Test of English - fast results for visas/study." },
-  japanese: { name: "Japanese Language", score: "JLPT N2", desc: "Japanese Language Proficiency Test for Japan studies." },
+  japanese: {
+    name: "Japanese Language",
+    score: "JLPT N1/N2 / JLCT / J-TEST",
+    desc: "Japanese language training covering JLPT, JLCT, and J-TEST/J-Cert preparation for Japan study and work programs.",
+  },
 };
 
-const testPrepDetails: Record<keyof typeof testData, { syllabus: string[]; whoItsFor: string[]; } > = {
+const testPrepDetails: Record<keyof typeof testData, { syllabus: string[]; whoItsFor: string[]; }> = {
   ielts: {
     syllabus: [
       "Listening, Reading & Writing strategies",
@@ -69,11 +73,15 @@ const testPrepDetails: Record<keyof typeof testData, { syllabus: string[]; whoIt
       "Reading comprehension practice",
       "Listening drills with exam-style questions",
       "Monthly progress tests",
+      "JLCT exam preparation",
+      "J-TEST / J-Cert practice modules",
     ],
     whoItsFor: [
-      "Students aiming for JLPT N2",
+      "Students aiming for JLPT N2/N1",
       "Applicants for Japan study programs",
       "Learners building real proficiency for exams",
+      "Students preparing for JLCT certification",
+      "Candidates targeting J-TEST / J-Cert exams",
     ],
   },
 };
@@ -182,8 +190,8 @@ const TestPrepPage = () => {
           </div>
 
           <div className="text-center">
-            <Link 
-              to="/appointment" 
+            <Link
+              to="/appointment"
               className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 text-white px-10 py-5 rounded-3xl text-xl font-bold hover:shadow-2xl transition-all duration-500 transform hover:scale-105"
             >
               Book {data?.name} Coaching Now

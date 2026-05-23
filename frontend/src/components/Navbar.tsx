@@ -43,7 +43,7 @@ const testPrepLinks = [
 
 const resourcesLinks = [
   { label: "Interview Preparation", path: "/resources/interview-prep" },
-  { label: "Biodata", path: "/resources/biodata" },
+  { label: "Bio-Data", path: "/resources/biodata" },
   { label: "Statement of Purpose", path: "/resources/sop" },
   { label: "Course Selection", path: "/resources/course-selection" },
   { label: "Letter of Recommendation", path: "/resources/letter-of-recommendation" },

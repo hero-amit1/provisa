@@ -117,10 +117,11 @@ const ContactPage = () => {
 
                   <div className="rounded-xl overflow-hidden border border-border">
                     <iframe
-                      title="Google Map"
-                      src="https://maps.google.com/maps?q=Kathmandu&z=13&output=embed"
-                      className="w-full h-64 border-0 rounded-xl"
+                      title="Professional Visa and Education Services Map"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11882.577857577571!2d85.31127895024377!3d27.69530476835709!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb19a8ec4da4db%3A0x37d7aeb77add9ce0!2sProfessional%20Visa%20and%20Education%20Services!5e0!3m2!1sen!2snp!4v1779470231311!5m2!1sen!2snp"
+                      className="w-full h-64 border-0"
                       loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
                       allowFullScreen
                     />
                   </div>

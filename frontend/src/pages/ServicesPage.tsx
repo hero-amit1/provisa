@@ -237,41 +237,82 @@ const ServicesPage = () => {
                 </h2>
 
                 <p className="text-slate-300 text-lg max-w-3xl mx-auto">
-                  Explore world-class education opportunities in Nepal with
-                  complete support for admission, visa, accommodation, and
-                  career guidance.
+                  Explore world-class education opportunities in Nepal with complete
+                  support for admission, visa, accommodation, and career guidance.
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[
-                  "Medical Colleges",
-                  "Agriculture Universities",
-                  "Forestry Programs",
-                  "Engineering & Technology",
-                  "Tourism & Hospitality",
-                  "Business & Management",
-                  "Nepali Language Courses",
-                  "Culture & Social Studies",
-                  "International Student Visa Support",
-                  "Hostel & Accommodation Assistance",
+                  {
+                    title: "Medical Colleges",
+                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+                  },
+                  {
+                    title: "Agriculture Universities",
+                    img: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
+                  },
+                  {
+                    title: "Forestry Programs",
+                    img: "https://images.unsplash.com/photo-1448375240586-882707db888b",
+                  },
+                  {
+                    title: "Engineering & Technology",
+                    img: "https://images.unsplash.com/photo-1581092335397-9fa1a1f3d0a3",
+                  },
+                  {
+                    title: "Tourism & Hospitality",
+                    img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+                  },
+                  {
+                    title: "Business & Management",
+                    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+                  },
+                  {
+                    title: "Nepali Language Courses",
+                    img: "https://images.unsplash.com/photo-1529070538774-1843cb3265df",
+                  },
+                  {
+                    title: "Culture & Social Studies",
+                    img: "https://images.unsplash.com/photo-1548013146-72479768bada",
+                  },
+                  {
+                    title: "International Student Visa Support",
+                    img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
+                  },
+                  {
+                    title: "Hostel & Accommodation Assistance",
+                    img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+                  },
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="group bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-3xl p-8 hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 backdrop-blur-xl"
+                    className="group bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 backdrop-blur-xl"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <GraduationCap className="h-7 w-7 text-primary" />
+                    {/* IMAGE */}
+                    <div className="h-48 overflow-hidden">
+                      <img
+                        src={item.img}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white mb-3">
-                      {item}
-                    </h3>
+                    {/* CONTENT */}
+                    <div className="p-8">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <GraduationCap className="h-7 w-7 text-primary" />
+                      </div>
 
-                    <p className="text-slate-300">
-                      Professional support and guidance for students interested
-                      in {item.toLowerCase()}.
-                    </p>
+                      <h3 className="text-2xl font-bold text-white mb-3">
+                        {item.title}
+                      </h3>
+
+                      <p className="text-slate-300">
+                        Professional support and guidance for students interested in{" "}
+                        {item.title.toLowerCase()}.
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
