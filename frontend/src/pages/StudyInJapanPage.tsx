@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import japanImg from "@/assets/japan.jpg";
-import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Briefcase, Globe, Award, Shield, Calendar, FileText, CheckCircle } from "lucide-react";
+import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Globe } from "lucide-react";
+
 
 const StudyInJapanPage = () => {
     return (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Award, Users, Globe, Clock } from "lucide-react";
 
 const stats = [
@@ -9,7 +9,14 @@ const stats = [
 ];
 
 // ✅ FIX: Separate component (so hooks are valid)
-const StatCard = ({ stat, index }: any) => {
+type Stat = {
+  icon: React.ComponentType<{ className?: string }>;
+  value: number;
+  suffix: string;
+  label: string;
+};
+
+const StatCard = ({ stat, index }: { stat: Stat; index: number }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -30,7 +37,7 @@ const StatCard = ({ stat, index }: any) => {
     return () => clearInterval(timer);
   }, [stat.value]);
 
-return (
+  return (
     <div
       className="group relative bg-background border border-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
       style={{ animationDelay: `${index * 100}ms` }}

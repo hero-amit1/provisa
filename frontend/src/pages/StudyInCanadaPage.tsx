@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import canadaImg from "@/assets/canada.jpg";
-import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Briefcase, Globe, Award, Shield, Calendar, FileText, CheckCircle } from "lucide-react";
+import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, } from "lucide-react";
+
 
 const StudyInCanadaPage = () => {
     return (

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import australiaImg from "@/assets/australia.jpg";
-import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Briefcase, Globe, Award, Shield, Calendar, FileText, CheckCircle } from "lucide-react";
+import { MapPin, GraduationCap, Users, DollarSign, BookOpen, Users2, Award } from "lucide-react";
 
 const StudyInAustraliaPage = () => {
     return (

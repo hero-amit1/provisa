@@ -12,6 +12,21 @@ import {
   Sparkles,
 } from "lucide-react";
 
+// =========================
+// IMPORT LOCAL IMAGES
+// =========================
+
+import medicalImg from "@/assets/medical.jpg";
+import agricultureImg from "@/assets/agriculture.jpg";
+import forestryImg from "@/assets/forestry.jpg";
+import engineeringImg from "@/assets/engineering.jpg";
+import tourismImg from "@/assets/tourism.jpg";
+import businessImg from "@/assets/business.jpg";
+import languageImg from "@/assets/language.jpg";
+import cultureImg from "@/assets/culture.jpg";
+import visaImg from "@/assets/visa.jpg";
+import hostelImg from "@/assets/hostel.jpg";
+
 type ServiceItem = {
   name: string;
   icon: LucideIcon;
@@ -120,9 +135,11 @@ const ServicesPage = () => {
         <div className="absolute bottom-0 right-0 w-72 h-72 bg-orange-500/20 blur-3xl rounded-full animate-pulse" />
 
         <div className="section-container max-w-6xl mx-auto relative z-10">
+
           {/* HERO */}
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
-            {/* Left */}
+
+            {/* LEFT */}
             <div className="animate-fade-in">
               <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 px-5 py-2 rounded-full mb-6 backdrop-blur-md">
                 <Sparkles className="h-4 w-4 text-primary" />
@@ -163,7 +180,7 @@ const ServicesPage = () => {
               </div>
             </div>
 
-            {/* Right Image */}
+            {/* RIGHT IMAGE */}
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-primary to-orange-500 rounded-[2rem] blur-2xl opacity-30 group-hover:opacity-50 transition-all duration-500" />
 
@@ -211,7 +228,7 @@ const ServicesPage = () => {
                   className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:-translate-y-2 hover:border-primary/40 transition-all duration-500 shadow-2xl"
                 >
                   <div className="mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
                       <FeatureIcon className={`h-8 w-8 ${item.color}`} />
                     </div>
                   </div>
@@ -231,6 +248,7 @@ const ServicesPage = () => {
           {/* STUDY IN NEPAL SPECIAL */}
           {service === "study-in-nepal" && (
             <div className="mb-24">
+
               <div className="text-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                   Opportunities in Nepal
@@ -246,50 +264,49 @@ const ServicesPage = () => {
                 {[
                   {
                     title: "Medical Colleges",
-                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+                    img: medicalImg,
                   },
                   {
                     title: "Agriculture Universities",
-                    img: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9",
+                    img: agricultureImg,
                   },
                   {
                     title: "Forestry Programs",
-                    img: "https://images.unsplash.com/photo-1448375240586-882707db888b",
+                    img: forestryImg,
                   },
                   {
                     title: "Engineering & Technology",
-                    img: "https://images.unsplash.com/photo-1581092335397-9fa1a1f3d0a3",
+                    img: engineeringImg,
                   },
                   {
                     title: "Tourism & Hospitality",
-                    img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+                    img: tourismImg,
                   },
                   {
                     title: "Business & Management",
-                    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+                    img: businessImg,
                   },
                   {
                     title: "Nepali Language Courses",
-                    img: "https://images.unsplash.com/photo-1529070538774-1843cb3265df",
+                    img: languageImg,
                   },
                   {
                     title: "Culture & Social Studies",
-                    img: "https://images.unsplash.com/photo-1548013146-72479768bada",
+                    img: cultureImg,
                   },
                   {
                     title: "International Student Visa Support",
-                    img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85",
+                    img: visaImg,
                   },
                   {
                     title: "Hostel & Accommodation Assistance",
-                    img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688",
+                    img: hostelImg,
                   },
                 ].map((item, index) => (
                   <div
                     key={index}
                     className="group bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/40 hover:-translate-y-2 transition-all duration-500 backdrop-blur-xl"
                   >
-                    {/* IMAGE */}
                     <div className="h-48 overflow-hidden">
                       <img
                         src={item.img}
@@ -298,9 +315,8 @@ const ServicesPage = () => {
                       />
                     </div>
 
-                    {/* CONTENT */}
                     <div className="p-8">
-                      <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center mb-6">
                         <GraduationCap className="h-7 w-7 text-primary" />
                       </div>
 
@@ -316,6 +332,7 @@ const ServicesPage = () => {
                   </div>
                 ))}
               </div>
+
             </div>
           )}
 
@@ -342,6 +359,7 @@ const ServicesPage = () => {
               </Link>
             </div>
           </div>
+
         </div>
       </section>
     </Layout>

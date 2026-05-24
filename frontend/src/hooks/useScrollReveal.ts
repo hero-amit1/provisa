@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+
+// NOTE: this hook intentionally does not use refs; keep imports minimal.
 
 interface UseScrollRevealOptions {
   threshold?: number;

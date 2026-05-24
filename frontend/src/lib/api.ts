@@ -80,13 +80,16 @@ const apiFetch = async (
 
   const url = `${API_BASE}${endpoint}`;
 
-  // Debug logs
-  console.log('========================');
-  console.log('API REQUEST');
-  console.log('URL:', url);
-  console.log('METHOD:', options.method || 'GET');
-  console.log('BODY:', logBodyForDebug(options.body));
-  console.log('========================');
+  // Debug logs (development only)
+  if (import.meta.env.DEV) {
+    console.log('========================');
+    console.log('API REQUEST');
+    console.log('URL:', url);
+    console.log('METHOD:', options.method || 'GET');
+    console.log('BODY:', logBodyForDebug(options.body));
+    console.log('========================');
+  }
+
 
   const response = await fetch(url, {
     method: options.method || 'GET',
